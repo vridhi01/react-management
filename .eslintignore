@@ -1,0 +1,9 @@
+// .eslintignore
+node_modules/*
+config/*
+public/*
+scripts/*
+src/react-app-env.d.ts
+src/reportWebVitals.ts
+.storybook
+.config
