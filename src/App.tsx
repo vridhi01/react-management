@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import Login from "./Pages/login";
 import Registration from "./Pages/registration";
+import AddProject from "./Pages/addProject";
 import { Routes, Route } from "react-router-dom";
 /**
  * Home Page of the Application
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="registration" element={<Registration />} />
+          <Route path="/projects" element={<AddProject />} />
         </Routes>
       </div>
     </>
