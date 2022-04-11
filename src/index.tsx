@@ -8,15 +8,18 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../src/theme/index";
+import { AuthContextProvider } from "./context/AppContextData";
 import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
+        <AuthContextProvider>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </AuthContextProvider>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>,

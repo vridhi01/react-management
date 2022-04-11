@@ -16,8 +16,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import { useNavigate } from "react-router-dom";
-import UploadImage from "./uploadImage";
+import { useNavigate, Outlet } from "react-router-dom";
+import UserLogout from "./userlogout";
 
 const drawerWidth = 240;
 
@@ -65,9 +65,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
-interface ComponentProps {
-  children?: JSX.Element | JSX.Element[];
-}
+// interface ComponentProps {
+//   children?: JSX.Element | JSX.Element[];
+// }
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open"
@@ -104,8 +104,7 @@ const Drawer = styled(MuiDrawer, {
   })
 }));
 
-const AdminLayout = (props: ComponentProps) => {
-  const { children } = props;
+const AdminLayout = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -136,10 +135,7 @@ const AdminLayout = (props: ComponentProps) => {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
-          </Typography> */}
-          <UploadImage />
+          <UserLogout />
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -187,7 +183,7 @@ const AdminLayout = (props: ComponentProps) => {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1 }}>
         <DrawerHeader />
-        {children}
+        <Outlet />
       </Box>
     </Box>
   );

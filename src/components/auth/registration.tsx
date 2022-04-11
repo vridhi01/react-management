@@ -1,18 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { userLogin } from "../../redux/slice/auth/loginSlice";
+import { db } from "../../firebaseConfig";
 import { useDispatch } from "react-redux";
+import { userSignup } from "../../redux/slice/auth/registrationSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
-import TextField from "@mui/material/TextField";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { useFormik } from "formik";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { useAuthState } from "../../context/AppContextData";
+import { useNavigate } from "react-router";
 /**
  * Home Page of the Application
  * @return {JSX.Element}
  */
+
+interface formEvent {
+  Name: string;
+  Email: string;
+  Password: string;
+  CPassword: string;
+  Role: string;
+}
+
 const validationSchema = yup.object({
+  Name: yup.string().required("name is required"),
   Email: yup
     .string()
     .email("Enter a valid email")
@@ -24,29 +41,62 @@ const validationSchema = yup.object({
     .matches(/[a-z]+/, "Password must contain one lowercase character")
     .matches(/[A-Z]+/, "Password must contain one uppercase character")
     .matches(/[@$!%*#?&]+/, "Password must contain one special character")
-    .matches(/\d+/, "Password must contain one number")
+    .matches(/\d+/, "Password must contain one number"),
+  CPassword: yup
+    .string()
+    .oneOf([yup.ref("Password"), null], "Passwords must match"),
+  Role: yup.string().required("Role is required")
 });
-const Login: React.FC = () => {
+
+const Registration: React.FC = () => {
+  const [userDetails, setUserDetails] = useState({
+    Name: "",
+    Email: "",
+    Role: " "
+  });
+
   const dispatch = useDispatch();
+  const RegisterUser = useSelector((state: RootState) => state.userSignup);
+  const navigate = useNavigate();
+  const { user } = useAuthState();
+  useEffect(() => {
+    const genRandomKey = async () => {
+      if (RegisterUser.userData.uid) {
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify(RegisterUser.userData.uid)
+        );
+        const data = {
+          Name: userDetails.Name,
+          Email: userDetails.Email,
+          Role: userDetails.Role,
+          uid: RegisterUser.userData.uid
+        };
 
-  const loginUser = useSelector((state: RootState) => state.userlogin);
-  if (loginUser.isAuthenticationSuccess == true) {
-    window.location.replace("/home");
-  }
+        const usersRef = collection(db, "Users");
+        await setDoc(doc(usersRef, `${RegisterUser.userData.uid}`), data);
 
-  interface formEvent {
-    Email: string;
-    Password: string;
-  }
+        if (user) {
+          navigate("/home");
+        }
+      }
+    };
+    genRandomKey();
+  }, [RegisterUser]);
+
   const formik = useFormik<formEvent>({
     initialValues: {
+      Name: "",
       Email: "",
-      Password: ""
+      Password: "",
+      CPassword: "",
+      Role: ""
     },
     validationSchema: validationSchema,
     onSubmit: (values: any) => {
+      setUserDetails(values);
       dispatch(
-        userLogin({
+        userSignup({
           email: values.Email,
           password: values.Password
         })
@@ -65,22 +115,41 @@ const Login: React.FC = () => {
           />
         </div>
         <h3 className="text-2xl font-bold text-center">
-          Login to your account
+          Sign up to your account
         </h3>
-        {/* <div>{loginUser.errorMsg}</div> */}
+
         <form onSubmit={formik.handleSubmit}>
           <div className="mt-4">
-            <div>
+            <div className="mt-2">
+              <label className="block">Name</label>
+              <TextField
+                type="text"
+                placeholder="Name"
+                name="Name"
+                size="small"
+                value={formik.values.Name}
+                className="w-full  border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                error={formik.touched.Name && Boolean(formik.errors.Name)}
+              />
+            </div>
+            <p className="text-red-600 text-xs">
+              {formik.touched.Name && formik.errors.Name}
+            </p>
+            <div className="mt-4">
               <label className="block">Email</label>
               <TextField
                 type="text"
                 placeholder="Email"
                 name="Email"
-                size="small"
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                className="w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
+                size="small"
+                value={formik.values.Email}
                 error={formik.touched.Email && Boolean(formik.errors.Email)}
               />
             </div>
@@ -93,10 +162,11 @@ const Login: React.FC = () => {
                 type="password"
                 placeholder="Password"
                 name="Password"
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                className="w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
+                value={formik.values.Password}
                 size="small"
                 error={
                   formik.touched.Password && Boolean(formik.errors.Password)
@@ -106,29 +176,62 @@ const Login: React.FC = () => {
             <p className="text-red-600 text-xs">
               {formik.touched.Password && formik.errors.Password}
             </p>
-            <div className="flex items-baseline justify-between">
+            <div className="mt-4">
+              <label className="block">Confirm Password</label>
+              <TextField
+                type="password"
+                placeholder="Confirm Password"
+                name="CPassword"
+                className="w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                size="small"
+                value={formik.values.CPassword}
+                error={
+                  formik.touched.CPassword && Boolean(formik.errors.CPassword)
+                }
+              />
+            </div>
+            <p className="text-red-600 text-xs">
+              {formik.touched.CPassword && formik.errors.CPassword}
+            </p>
+            <div className="mt-4">
+              <label className="block">Role</label>
+              <Select
+                className="w-full  border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                name="Role"
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                size="small"
+                value={formik.values.Role}
+                error={formik.touched.Role && Boolean(formik.errors.Role)}
+              >
+                <MenuItem value="selectedvalue">Please Select</MenuItem>
+                <MenuItem value="user">User</MenuItem>
+                <MenuItem value="admin">Admin</MenuItem>
+              </Select>
+            </div>
+            <p className="text-red-600 text-xs">
+              {formik.touched.Role && formik.errors.Role}
+            </p>
+            <div className="flex">
               <button
-                className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
+                className="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
                 type="submit"
               >
-                Login
+                Create Account
               </button>
-              <Link
-                className="text-sm text-blue-600 hover:underline"
-                to="/forgot_password"
-              >
-                Forgot password?
+            </div>
+            <div className="mt-4 text-sm font-display font-semibold text-gray-700 text-center">
+              Already have an account ?{" "}
+              <Link className="text-blue-600 hover:underline" to="/">
+                Sign in
               </Link>
             </div>
           </div>
         </form>
-
-        <div className="mt-4 text-sm font-display font-semibold text-gray-700 text-center">
-          Dont have an account ?{" "}
-          <Link className="text-blue-600 hover:underline" to="/registration">
-            Sign up
-          </Link>
-        </div>
       </div>
       <ToastContainer
         position="bottom-left"
@@ -145,4 +248,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Registration;

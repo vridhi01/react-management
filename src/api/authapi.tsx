@@ -9,6 +9,8 @@ import {
 export const loginApi = async (email: string, password: string) => {
   try {
     const userLogin = await signInWithEmailAndPassword(auth, email, password);
+    localStorage.setItem("currentUser", userLogin?.user?.uid);
+    console.log(userLogin, "userLogin");
     return userLogin;
   } catch (error: any) {
     const errorCodes = error.code;
@@ -33,6 +35,7 @@ export const registrationapi = async (email: string, password: string) => {
       email,
       password
     );
+
     return userRegistration;
   } catch (error: any) {
     const errorCode = error.code;

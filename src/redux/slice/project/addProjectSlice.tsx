@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addProjectApi } from "../../../api/addprojectapi";
+import { addProjectApi } from "../../../api/projectapi";
 
 interface addProject {
   projectName: string;
-  Username: string;
+  projectType: string;
+  createdDate: string;
   Description: string;
   Link: string;
   Rate: string;
@@ -13,13 +14,22 @@ interface addProject {
 export const addProject = createAsyncThunk(
   "/addProject",
   async (
-    { projectName, Username, Description, Link, Rate, Team }: addProject,
+    {
+      projectName,
+      projectType,
+      createdDate,
+      Description,
+      Link,
+      Rate,
+      Team
+    }: addProject,
     thunkAPI
   ) => {
     try {
       return await addProjectApi(
         projectName,
-        Username,
+        projectType,
+        createdDate,
         Description,
         Link,
         Rate,
@@ -32,10 +42,9 @@ export const addProject = createAsyncThunk(
 );
 
 const initialState = {
-  isAuthenticating: false,
-  isAuthenticationFailed: true,
-  isAuthenticationSuccess: false,
-  userData: {},
+  projectadding: false,
+  projectaddingFailed: true,
+  projectaddingSuccess: false,
   errorMsg: ""
 };
 
@@ -43,33 +52,30 @@ const addProjectSlice = createSlice({
   name: "addProjectSlice",
   initialState,
   reducers: {
-    resetUserSignup: () => initialState
+    resetaddProject: () => initialState
   },
   extraReducers: (builder) => {
     builder.addCase(addProject.fulfilled, (state, { payload }) => {
-      // state.isAuthenticating = false;
-      // state.isAuthenticationFailed = false;
-      // state.isAuthenticationSuccess = true;
-      // state.userData = payload.user;
-      // state.errorMsg = "";
+      state.projectadding = false;
+      state.projectaddingFailed = false;
+      state.projectaddingSuccess = true;
+      state.errorMsg = "";
     });
     builder.addCase(addProject.rejected, (state, action: any) => {
-      state.isAuthenticating = false;
-      state.isAuthenticationFailed = true;
-      state.isAuthenticationSuccess = false;
-      state.userData = {};
+      state.projectadding = false;
+      state.projectaddingFailed = true;
+      state.projectaddingSuccess = false;
       state.errorMsg = action.payload;
     });
     builder.addCase(addProject.pending, (state, { payload }) => {
-      state.isAuthenticating = true;
-      state.isAuthenticationFailed = false;
-      state.isAuthenticationSuccess = false;
-      state.userData = {};
+      state.projectadding = true;
+      state.projectaddingFailed = false;
+      state.projectaddingSuccess = false;
       state.errorMsg = "";
     });
   }
 });
 
-export const { resetUserSignup } = addProjectSlice.actions;
+export const { resetaddProject } = addProjectSlice.actions;
 
 export default addProjectSlice.reducer;

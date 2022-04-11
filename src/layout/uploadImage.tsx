@@ -88,9 +88,9 @@ const UploadImage: React.FC = () => {
   console.log(error);
   return (
     <>
-      {url ? (
-        <>
-          {" "}
+      {" "}
+      <Avatar className={`${classes.avatarImg}`} alt="Avatar">
+        {url ? (
           <img
             src={url}
             alt="user_pic"
@@ -98,23 +98,16 @@ const UploadImage: React.FC = () => {
             width="70px"
             className={`${classes.avatarImg} rounded-circle`}
           />
-          <input
-            type="file"
-            className={classes.profileUploader}
-            onChange={handleChange}
-            style={{ opacity: 0 }}
-          />
-        </>
-      ) : (
-        <Avatar className={`${classes.avatarImg}`} alt="Avatar">
-          <input
-            type="file"
-            className={classes.profileUploader}
-            style={{ opacity: 0 }}
-            onChange={handleChange}
-          />
-        </Avatar>
-      )}
+        ) : (
+          ""
+        )}
+        <input
+          type="file"
+          className={classes.profileUploader}
+          onChange={handleChange}
+          style={{ opacity: 0 }}
+        />
+      </Avatar>
     </>
   );
 };

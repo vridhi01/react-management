@@ -1,17 +1,19 @@
 import React from "react";
 import "./App.css";
-import Login from "./Component/auth/login";
-import Registration from "./Component/auth/registration";
-import Project from "../src/Component/Projects/index";
-import ResetPassword from "./Component/auth/resetpassword";
+import Login from "./components/auth/login";
+import Registration from "./components/auth/registration";
+import Project from "./components/Projects/index";
+import ResetPassword from "./components/auth/resetpassword";
 import { Routes, Route } from "react-router-dom";
-import Home from "../src/Pages/home";
-import AdminLayout from "./layout";
+import Home from "./pages/home";
+import AdminLayout from "./layout/index";
+import PrivateRoute from "./components/PrivateRoute";
 
 /**
  * Home Page of the Application
  * @return {JSX.Element}
  */
+
 const App: React.FC = () => {
   return (
     <>
@@ -20,22 +22,16 @@ const App: React.FC = () => {
           <Route path="/" element={<Login />} />
           <Route path="registration" element={<Registration />} />
           <Route
-            path="/projects"
             element={
-              <AdminLayout>
-                <Project />
-              </AdminLayout>
+              <PrivateRoute>
+                <AdminLayout />
+              </PrivateRoute>
             }
-          />
-          <Route path="/forgot_password" element={<ResetPassword />} />
-          <Route
-            path="/Home"
-            element={
-              <AdminLayout>
-                <Home />
-              </AdminLayout>
-            }
-          />
+          >
+            <Route path="projects" element={<Project />} />
+            <Route path="forgot_password" element={<ResetPassword />} />
+            <Route path="Home" element={<Home />} />
+          </Route>
         </Routes>
       </div>
     </>
