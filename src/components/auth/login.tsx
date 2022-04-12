@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { userLogin } from "../../redux/slice/auth/loginSlice";
 import { useDispatch } from "react-redux";
@@ -28,9 +28,11 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthState();
 
-  if (user) {
-    navigate("/home");
-  }
+  useEffect(() => {
+    if (user != null) {
+      navigate("/home");
+    }
+  }, [user]);
 
   interface formEvent {
     Email: string;

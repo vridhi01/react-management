@@ -3,7 +3,8 @@ import {
   setDoc,
   doc,
   getDocs,
-  deleteDoc
+  deleteDoc,
+  updateDoc
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { toast } from "react-toastify";
@@ -50,6 +51,40 @@ export const deleteProjectApi = async (projectId: string) => {
     deleteDoc(deleteRef);
 
     toast("product deleted successfully", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
+  } catch (error: any) {
+    throw error;
+  }
+};
+export const editProjectApi = async (
+  projectName: string,
+  projectType: string,
+  createdDate: string,
+  Description: string,
+  Link: string,
+  Rate: string,
+  Team: string,
+  projectId: string
+) => {
+  try {
+    const editRef = doc(db, "projects", projectId);
+    updateDoc(editRef, {
+      projectName: projectName,
+      projectType: projectType,
+      createdDate: createdDate,
+      Description: Description,
+      Link: Link,
+      Rate: Rate,
+      Team: Team
+    });
+    toast("Product updated successfully", {
       position: "bottom-left",
       autoClose: 5000,
       hideProgressBar: false,

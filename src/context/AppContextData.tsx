@@ -11,13 +11,14 @@ export const AuthContextProvider = (props: any) => {
   useEffect((): any => {
     // @ts-ignore
     const unSubscribe = onAuthStateChanged(auth, setUser, setError);
+
     return () => unSubscribe();
   }, []);
 
   return <AuthContext.Provider value={{ user, error }} {...props} />;
 };
-
 export const useAuthState = () => {
   const authData = useContext(AuthContext);
+  console.log(authData, "authData");
   return authData;
 };

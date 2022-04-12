@@ -20,6 +20,7 @@ const App: React.FC = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="forgot_password" element={<ResetPassword />} />
           <Route path="registration" element={<Registration />} />
           <Route
             element={
@@ -29,7 +30,6 @@ const App: React.FC = () => {
             }
           >
             <Route path="projects" element={<Project />} />
-            <Route path="forgot_password" element={<ResetPassword />} />
             <Route path="Home" element={<Home />} />
           </Route>
         </Routes>

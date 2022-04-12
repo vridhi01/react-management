@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addProjectApi } from "../../../api/projectapi";
 
 interface addProject {
-  projectName: string;
-  projectType: string;
-  createdDate: string;
-  Description: string;
-  Link: string;
-  Rate: string;
-  Team: string;
+  projectName: string | any;
+  projectType: string | any;
+  createdDate: string | any;
+  Description: string | any;
+  Link: string | any;
+  Rate: string | any;
+  Team: string | any;
 }
 
 export const addProject = createAsyncThunk(
