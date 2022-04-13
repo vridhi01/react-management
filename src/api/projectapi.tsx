@@ -79,10 +79,10 @@ export const editProjectApi = async (
       projectName: projectName,
       projectType: projectType,
       createdDate: createdDate,
-      Description: Description,
-      Link: Link,
-      Rate: Rate,
-      Team: Team
+      description: Description,
+      link: Link,
+      rate: Rate,
+      team: Team
     });
     toast("Product updated successfully", {
       position: "bottom-left",

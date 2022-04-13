@@ -18,11 +18,11 @@ import { addProject } from "../../redux/slice/project/addProjectSlice";
 import { listProject } from "../../redux/slice/project/listProjectSlice";
 import { editProject } from "../../redux/slice/project/editProjectSLice";
 import { projectalldata } from "./index";
-
+import { teamDetails, prodjectType } from "../../pages/hardCodedData";
 const validationSchema = yup.object({
   projectName: yup.string().required("name is required"),
   Description: yup.string().required("Description is required"),
-  Link: yup.string().required("Link is required"),
+  Link: yup.string().url("Must be a valid URL").required("Link is required"),
   Rate: yup.string().required("Rate is required"),
   Team: yup.string().required("team is required"),
   projectType: yup.string().required("projecttype is required"),
@@ -42,7 +42,6 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
   };
 
   const [iseditItem, setIsEditItem] = useState<null | projectalldata>();
-
   useEffect(() => {
     if (edit) {
       setIsEditItem(editData);
@@ -63,28 +62,22 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
     setOpen(false);
     setIsEditItem(null);
   };
-  const teamDetails = [
-    "nodejs",
-    "angular",
-    "react",
-    "reactNative",
-    "flutter",
-    "python",
-    "magento"
-  ];
-  const prodjectType = ["fixed Price", "Hourly Based"];
 
   const dispatch = useDispatch();
 
   const initialValues = {
-    projectName: iseditItem?.projectName || "",
-    Description: iseditItem?.description || "",
-    Link: iseditItem?.link || "",
-    Rate: iseditItem?.rate || "",
-    createdDate: iseditItem?.createdDate || "",
-    projectType: iseditItem?.projectType || "fixed Price",
-    Team: iseditItem?.team || "nodejs",
-    projectid: iseditItem?.projectid || ""
+    projectName: edit ? iseditItem?.projectName : "",
+    Description: edit ? iseditItem?.description : "",
+    Link: edit ? iseditItem?.link : "",
+    Rate: edit ? iseditItem?.rate : "",
+    createdDate: edit ? iseditItem?.createdDate : "",
+    projectType: edit ? iseditItem?.projectType : "fixed Price",
+    Team: edit ? iseditItem?.team : "nodejs",
+    projectid: edit ? iseditItem?.projectid : ""
+  };
+  const handleCloseModal = (e: any) => {
+    e.preventDefault();
+    setOpen(false);
   };
 
   return (
@@ -146,12 +139,22 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
             touched,
             handleChange,
             handleSubmit,
+            setTouched,
             errors,
             ...rest
           }) => {
+            console.log(touched, rest, Object.keys(touched).length > 0);
             return (
               <>
-                <form onSubmit={handleSubmit}>
+                <form
+                  onSubmit={(e) => {
+                    edit
+                      ? Object.keys(touched).length > 0
+                        ? handleSubmit(e)
+                        : handleCloseModal(e)
+                      : handleSubmit(e);
+                  }}
+                >
                   <DialogContent>
                     <div className="mt-2 grid grid-cols-2 gap-8">
                       <div>
@@ -160,9 +163,11 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                           type="text"
                           placeholder="Project Name"
                           name="projectName"
+                          autoComplete="off"
                           className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                           onChange={(e) => {
                             handleChange(e);
+                            setTouched({ ...touched, ["projectName"]: true });
                           }}
                           value={values.projectName}
                           error={
@@ -179,8 +184,10 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                         <Select
                           className="w-full rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                           name="projectType"
+                          autoComplete="off"
                           onChange={(e) => {
                             handleChange(e);
+                            setTouched({ ...touched, ["projectType"]: true });
                           }}
                           value={values.projectType}
                           error={
@@ -206,9 +213,11 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                           type="text"
                           placeholder="Link"
                           name="Link"
+                          autoComplete="off"
                           className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                           onChange={(e) => {
                             handleChange(e);
+                            setTouched({ ...touched, ["Link"]: true });
                           }}
                           value={values.Link}
                           error={touched.Link && Boolean(errors.Link)}
@@ -224,9 +233,11 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                           type="text"
                           placeholder="Rate"
                           name="Rate"
+                          autoComplete="off"
                           className=" mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                           onChange={(e) => {
                             handleChange(e);
+                            setTouched({ ...touched, ["Rate"]: true });
                           }}
                           value={values.Rate}
                           error={touched.Rate && Boolean(errors.Rate)}
@@ -247,9 +258,11 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                             type="date"
                             placeholder="Enter Date"
                             name="createdDate"
+                            autoComplete="off"
                             className=" mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                             onChange={(e) => {
                               handleChange(e);
+                              setTouched({ ...touched, ["createdDate"]: true });
                             }}
                             value={values.createdDate}
                             error={
@@ -267,8 +280,10 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                         <Select
                           className="w-full rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                           name="Team"
+                          autoComplete="off"
                           onChange={(e) => {
                             handleChange(e);
+                            setTouched({ ...touched, ["Team"]: true });
                           }}
                           value={values.Team}
                           error={touched.Team && Boolean(errors.Team)}
@@ -292,11 +307,13 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                         type="text"
                         placeholder="Description"
                         name="Description"
+                        autoComplete="off"
                         multiline
                         rows={4}
                         className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                         onChange={(e) => {
                           handleChange(e);
+                          setTouched({ ...touched, ["Description"]: true });
                         }}
                         value={values.Description}
                         error={

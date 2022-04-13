@@ -8,7 +8,8 @@ import { listProject } from "../../redux/slice/project/listProjectSlice";
 import { RootState } from "../../redux/rootReducer";
 import CircularProgress from "@mui/material/CircularProgress";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { deleteProject } from "../../redux/slice/project/deleteProjectSlice";
+import DeleteProject from "./deleteModalProject";
+import EditIcon from "@mui/icons-material/Edit";
 
 export interface projectalldata {
   projectName: string;
@@ -38,32 +39,32 @@ const Index: React.FC = () => {
   useEffect(() => {
     if (deleteProductList.projectdeleteSuccess == true) {
       dispatch(listProject());
+      setDeleteOpen(false);
     }
   }, [deleteProductList.projectdeleteSuccess]);
 
   useEffect(() => {
     if (editProductList.projecteditingSuccess == true) {
       dispatch(listProject());
+      setEdit(false);
       setOpen(false);
     }
   }, [editProductList.projecteditingSuccess]);
 
-  const handleClick = (projectid: string) => {
-    dispatch(
-      deleteProject({
-        projectId: projectid
-      })
-    );
-  };
-
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editData, setEditData] = useState({} as projectalldata);
-
+  const [deleteid, setDeleteId] = useState({} as string);
+  const [deleteopen, setDeleteOpen] = useState(false);
   const handleCardClick = (data: any) => {
     setOpen(true);
     setEditData(data);
     setEdit(true);
+  };
+
+  const handleDeleteClick = (projectid: string) => {
+    setDeleteId(projectid);
+    setDeleteOpen(true);
   };
 
   useEffect(() => {
@@ -91,10 +92,7 @@ const Index: React.FC = () => {
               return (
                 <>
                   <div className="shadow-md rounded font-medium  p-5 my-5">
-                    <div
-                      onClick={() => handleCardClick(data)}
-                      key={data.projectid}
-                    >
+                    <div>
                       <div className="flex justify-between">
                         <div className="text-black text-left font-bold">
                           {data.projectName}
@@ -115,21 +113,38 @@ const Index: React.FC = () => {
                         {data.description}
                       </div>
                       <div className="font-light text-xs text-left py-2">
-                        {data.link}
+                        <a target="_blank" href={data.link} rel="noreferrer">
+                          {data.link}
+                        </a>
                       </div>
                       <div className="font-light text-sm text-left ">
                         {data.team}
                       </div>
                     </div>
-
-                    <div className="flex justify-end p-0">
-                      <IconButton
+                    <DeleteProject
+                      deleteopen={deleteopen}
+                      setDeleteOpen={setDeleteOpen}
+                      deleteid={deleteid}
+                    />
+                    <div className="flex justify-end">
+                      <div
+                        onClick={() => handleCardClick(data)}
+                        key={data.projectid}
+                      >
+                        {" "}
+                        <IconButton>
+                          <EditIcon />
+                        </IconButton>
+                      </div>
+                      <div
                         onClick={() => {
-                          handleClick(data.projectid);
+                          handleDeleteClick(data.projectid);
                         }}
                       >
-                        <DeleteIcon />
-                      </IconButton>
+                        <IconButton>
+                          <DeleteIcon />
+                        </IconButton>
+                      </div>
                     </div>
                   </div>
                 </>
