@@ -10,6 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteProject from "./deleteModalProject";
 import EditIcon from "@mui/icons-material/Edit";
+import { listEmployee } from "../../redux/slice/employee/listEmployeeSlice";
 
 export interface projectalldata {
   projectName: string;
@@ -20,6 +21,7 @@ export interface projectalldata {
   createdDate: string;
   projectType: string;
   projectid: string;
+  userData: any;
 }
 
 const Index: React.FC = () => {
@@ -34,6 +36,7 @@ const Index: React.FC = () => {
 
   useEffect(() => {
     dispatch(listProject());
+    dispatch(listEmployee());
   }, []);
 
   useEffect(() => {
@@ -82,6 +85,7 @@ const Index: React.FC = () => {
           setOpen={setOpen}
         />
       </div>
+      {console.log(projectList, "projectList")}
       {projectList?.isprojectlistloading == true ? (
         <CircularProgress />
       ) : (

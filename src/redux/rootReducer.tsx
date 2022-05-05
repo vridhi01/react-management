@@ -6,6 +6,10 @@ import addProjectSlice from "./slice/project/addProjectSlice";
 import listProjectSlice from "./slice/project/listProjectSlice";
 import deleteProjectSlice from "./slice/project/deleteProjectSlice";
 import editProjectSlice from "./slice/project/editProjectSLice";
+import addEmployeeSlice from "./slice/employee/addEmployeeSlice";
+import listEmployeeSlice from "./slice/employee/listEmployeeSlice";
+import editEmployeeSLice from "./slice/employee/editEmployeeSLice";
+import deleteEmployeeSlice from "./slice/employee/deleteEmployeeSlice";
 const rootReducer = combineReducers({
   userlogin: loginSlice,
   userSignup: registrationSlice,
@@ -13,7 +17,11 @@ const rootReducer = combineReducers({
   addProjectSlice: addProjectSlice,
   listProjectSlice: listProjectSlice,
   deleteProjectSlice: deleteProjectSlice,
-  editProjectSlice: editProjectSlice
+  editProjectSlice: editProjectSlice,
+  addEmployeeSlice: addEmployeeSlice,
+  listEmployeeSlice: listEmployeeSlice,
+  editEmployeeSLice: editEmployeeSLice,
+  deleteEmployeeSlice: deleteEmployeeSlice
 });
 
 export interface RootState {
@@ -41,6 +49,19 @@ export interface RootState {
   };
   editProjectSlice: {
     projecteditingSuccess: boolean;
+  };
+  addEmployeeSlice: {
+    employeeaddingSuccess: boolean;
+  };
+  listEmployeeSlice: {
+    employeeData: [];
+    isemployeelistloading: boolean;
+  };
+  editEmployeeSLice: {
+    employeeeditingSuccess: boolean;
+  };
+  deleteEmployeeSlice: {
+    employeedeleteSuccess: boolean;
   };
 }
 

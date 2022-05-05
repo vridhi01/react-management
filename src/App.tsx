@@ -3,11 +3,13 @@ import "./App.css";
 import Login from "./components/auth/login";
 import Registration from "./components/auth/registration";
 import Project from "./components/Projects/index";
+import Employee from "./components/Employee/index";
 import ResetPassword from "./components/auth/resetpassword";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import AdminLayout from "./layout/index";
-import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute from "./routes/PrivateRoute";
+import { NoMatch } from "./routes/NoMatch";
 
 /**
  * Home Page of the Application
@@ -22,6 +24,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Login />} />
           <Route path="forgot_password" element={<ResetPassword />} />
           <Route path="registration" element={<Registration />} />
+          <Route path="*" element={<NoMatch />}></Route>
           <Route
             element={
               <PrivateRoute>
@@ -29,8 +32,9 @@ const App: React.FC = () => {
               </PrivateRoute>
             }
           >
+            <Route path="home" element={<Home />} />
             <Route path="projects" element={<Project />} />
-            <Route path="Home" element={<Home />} />
+            <Route path="users" element={<Employee />} />
           </Route>
         </Routes>
       </div>

@@ -1,10 +1,12 @@
 import {
-  collection,
-  setDoc,
   doc,
   getDocs,
   deleteDoc,
-  updateDoc
+  updateDoc,
+  where,
+  query,
+  collection,
+  setDoc
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { toast } from "react-toastify";
@@ -16,11 +18,24 @@ export const addProjectApi = async (
   Description: string,
   Link: string,
   Rate: string,
-  Team: string
+  Team: string,
+  userData: any
 ) => {
   try {
+    const userDatasets: any = [];
+    userData.map(async (dataset: any) => {
+      const q = query(
+        collection(db, "employee"),
+        where("userId", "==", dataset)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        userDatasets.push(doc.data());
+      });
+    });
+
     const newDocRef = doc(collection(db, "projects"));
-    await setDoc(newDocRef, {
+    setDoc(newDocRef, {
       projectName: projectName,
       projectType: projectType,
       createdDate: createdDate,
@@ -29,6 +44,22 @@ export const addProjectApi = async (
       link: Link,
       rate: Rate,
       projectid: newDocRef.id
+    }).then(function () {
+      userDatasets?.map(async (data: any) => {
+        const newColRef = doc(
+          db,
+          "projects",
+          newDocRef.id,
+          "users",
+          data.userId
+        );
+        await setDoc(newColRef, {
+          userName: data.userName,
+          userRole: data.userRole,
+          userEmail: data.userEmail,
+          userID: data.userId
+        });
+      });
     });
   } catch (error: any) {
     throw error;
@@ -38,9 +69,25 @@ export const addProjectApi = async (
 export const listProjectApi = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "projects"));
-    const data2 = querySnapshot.docs.map((doc) => doc.data());
-    return data2;
+    const collectiondata: any = [];
+    querySnapshot.docs.map(async (doc) => {
+      const userDatas = doc.data();
+      const querySnapshot2 = await getDocs(
+        collection(db, "projects", userDatas.projectid, "users")
+      );
+      const arr: any = [];
+      querySnapshot2.docs.map((doc) => {
+        const userquerydata = doc.data();
+        arr.push(userquerydata);
+      });
+
+      collectiondata.push({ ...userDatas, users: arr });
+    });
+
+    console.log(collectiondata, "collectiondata");
+    return collectiondata;
   } catch (error: any) {
+    console.log(error, "error");
     throw error;
   }
 };
@@ -63,6 +110,7 @@ export const deleteProjectApi = async (projectId: string) => {
     throw error;
   }
 };
+
 export const editProjectApi = async (
   projectName: string,
   projectType: string,

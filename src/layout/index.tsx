@@ -14,23 +14,11 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { useNavigate, Outlet } from "react-router-dom";
 import UserLogout from "./userlogout";
 import excellence from "../assests/excellence.png";
+import { drawerList } from "../pages/hardCodedData";
 const drawerWidth = 240;
-
-const drawerList = [
-  {
-    projectName: "home",
-    projectLink: "home"
-  },
-  {
-    projectName: "projects",
-    projectLink: "projects"
-  }
-];
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -121,8 +109,16 @@ const AdminLayout = () => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: "#12BB9F" }}>
-        <Toolbar className="flex justify-between">
+      <AppBar
+        position="fixed"
+        open={open}
+        sx={{
+          backgroundColor: "#12BB9F",
+          flexDirection: "row",
+          justifyContent: "space-between"
+        }}
+      >
+        <Toolbar className="flex">
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -135,8 +131,8 @@ const AdminLayout = () => {
           >
             <MenuIcon />
           </IconButton>
-          <UserLogout />
         </Toolbar>
+        <UserLogout />
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader sx={{ marginLeft: 5 }}>
@@ -168,7 +164,7 @@ const AdminLayout = () => {
                   justifyContent: "center"
                 }}
               >
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {text.projectIcon}
               </ListItemIcon>
               <ListItemText
                 primary={text.projectName}

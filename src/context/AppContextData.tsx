@@ -11,7 +11,6 @@ export const AuthContextProvider = (props: any) => {
   useEffect((): any => {
     // @ts-ignore
     const unSubscribe = onAuthStateChanged(auth, setUser, setError);
-
     return () => unSubscribe();
   }, []);
 

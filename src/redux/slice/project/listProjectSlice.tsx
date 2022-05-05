@@ -5,7 +5,8 @@ export const listProject = createAsyncThunk(
   "/listProject",
   async (_, thunkAPI) => {
     try {
-      return await listProjectApi();
+      const listprojectdata = await listProjectApi();
+      console.log(listprojectdata, "listprojectdata");
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -28,6 +29,7 @@ const listProjectSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(listProject.fulfilled, (state, action) => {
+      console.log(action, "000000000000");
       state.isprojectlistloading = false;
       state.projectlistingFailed = false;
       state.projectlistingSuccess = true;
