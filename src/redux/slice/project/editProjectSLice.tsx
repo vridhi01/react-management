@@ -10,6 +10,7 @@ interface editProjectData {
   Rate: string | any;
   Team: string | any;
   projectId: string | any;
+  userData: any;
 }
 
 export const editProject = createAsyncThunk(
@@ -23,7 +24,8 @@ export const editProject = createAsyncThunk(
       Link,
       Rate,
       Team,
-      projectId
+      projectId,
+      userData
     }: editProjectData,
     thunkAPI
   ) => {
@@ -36,7 +38,8 @@ export const editProject = createAsyncThunk(
         Link,
         Rate,
         Team,
-        projectId
+        projectId,
+        userData
       );
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

@@ -85,7 +85,7 @@ const Index: React.FC = () => {
           setOpen={setOpen}
         />
       </div>
-      {console.log(projectList, "projectList")}
+
       {projectList?.isprojectlistloading == true ? (
         <CircularProgress />
       ) : (
@@ -124,6 +124,15 @@ const Index: React.FC = () => {
                       <div className="font-light text-sm text-left ">
                         {data.team}
                       </div>
+                      {data?.userData?.map((text: any) => {
+                        return (
+                          <>
+                            <div className="font-light text-xs text-left py-2">
+                              {text.userName}
+                            </div>
+                          </>
+                        );
+                      })}
                     </div>
                     <DeleteProject
                       deleteopen={deleteopen}

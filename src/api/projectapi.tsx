@@ -70,24 +70,25 @@ export const listProjectApi = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "projects"));
     const collectiondata: any = [];
-    querySnapshot.docs.map(async (doc) => {
-      const userDatas = doc.data();
-      const querySnapshot2 = await getDocs(
-        collection(db, "projects", userDatas.projectid, "users")
-      );
-      const arr: any = [];
-      querySnapshot2.docs.map((doc) => {
-        const userquerydata = doc.data();
-        arr.push(userquerydata);
-      });
+    await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const projectData = doc.data();
+        const querySnapshot2 = await getDocs(
+          collection(db, "projects", projectData.projectid, "users")
+        );
+        const arr: Array<object> = [];
+        await Promise.all(
+          querySnapshot2.docs.map((doc) => {
+            const userquerydata = doc.data();
+            arr.push(userquerydata);
+          })
+        );
 
-      collectiondata.push({ ...userDatas, users: arr });
-    });
-
-    console.log(collectiondata, "collectiondata");
+        collectiondata.push({ ...projectData, userData: arr });
+      })
+    );
     return collectiondata;
   } catch (error: any) {
-    console.log(error, "error");
     throw error;
   }
 };
@@ -119,9 +120,26 @@ export const editProjectApi = async (
   Link: string,
   Rate: string,
   Team: string,
-  projectId: string
+  projectId: string,
+  userData: any
 ) => {
   try {
+    const userEditData: any = [];
+    await Promise.all(
+      userData.map(async (dataset: any) => {
+        const q = query(
+          collection(db, "employee"),
+          where("userId", "==", dataset)
+        );
+        const querySnapshot = await getDocs(q);
+        await Promise.all(
+          querySnapshot.docs.map((doc) => {
+            userEditData.push(doc.data());
+          })
+        );
+      })
+    );
+
     const editRef = doc(db, "projects", projectId);
     updateDoc(editRef, {
       projectName: projectName,
@@ -132,14 +150,15 @@ export const editProjectApi = async (
       rate: Rate,
       team: Team
     });
-    toast("Product updated successfully", {
-      position: "bottom-left",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined
+
+    userEditData?.map(async (data: any) => {
+      const usereditRef = doc(db, "projects", projectId, "users", data.userId);
+      await setDoc(usereditRef, {
+        userName: data.userName,
+        userRole: data.userRole,
+        userEmail: data.userEmail,
+        userID: data.userId
+      });
     });
   } catch (error: any) {
     throw error;

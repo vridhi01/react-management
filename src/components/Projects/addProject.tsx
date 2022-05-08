@@ -16,7 +16,7 @@ import { addProject } from "../../redux/slice/project/addProjectSlice";
 import { listProject } from "../../redux/slice/project/listProjectSlice";
 import { editProject } from "../../redux/slice/project/editProjectSLice";
 import { projectalldata } from "./index";
-import { teamDetails, prodjectType } from "../../pages/hardCodedData";
+import { teamDetails, prodjectType } from "../../Pages/hardCodedData";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -53,6 +53,7 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
   };
 
   const [iseditItem, setIsEditItem] = useState<null | projectalldata>();
+  const [usereditdata, setUserEditData] = useState<any>();
 
   useEffect(() => {
     if (edit) {
@@ -89,6 +90,14 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const arrData: any = [];
+    iseditItem?.userData.map((textData: any) => {
+      arrData.push(textData.userID);
+    });
+    setUserEditData(arrData);
+  }, [iseditItem?.userData]);
+
   const initialValues = {
     projectName: edit ? iseditItem?.projectName : "",
     Description: edit ? iseditItem?.description : "",
@@ -98,7 +107,7 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
     projectType: edit ? iseditItem?.projectType : "fixed Price",
     Team: edit ? iseditItem?.team : "nodejs",
     projectid: edit ? iseditItem?.projectid : "",
-    userData: edit ? [iseditItem?.userData] : []
+    userData: edit ? usereditdata : []
   };
 
   const handleCloseModal = (e: any) => {
@@ -148,7 +157,8 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                     Link: values.Link,
                     Rate: values.Rate,
                     Team: values.Team,
-                    projectId: values.projectid
+                    projectId: values.projectid,
+                    userData: values.userData
                   })
                 : addProject({
                     projectName: values.projectName,
