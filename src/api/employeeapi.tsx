@@ -8,7 +8,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { toast } from "react-toastify";
-
 export const addEmployeeApi = async (
   userName: string,
   userRole: string,

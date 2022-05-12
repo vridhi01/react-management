@@ -23,17 +23,20 @@ export const addProjectApi = async (
 ) => {
   try {
     const userDatasets: any = [];
-    userData.map(async (dataset: any) => {
-      const q = query(
-        collection(db, "employee"),
-        where("userId", "==", dataset)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        userDatasets.push(doc.data());
-      });
-    });
-
+    await Promise.all(
+      userData?.map(async (dataset: any) => {
+        const q = query(
+          collection(db, "employee"),
+          where("userId", "==", dataset)
+        );
+        const querySnapshot = await getDocs(q);
+        await Promise.all(
+          querySnapshot.docs.map((doc) => {
+            userDatasets.push(doc.data());
+          })
+        );
+      })
+    );
     const newDocRef = doc(collection(db, "projects"));
     setDoc(newDocRef, {
       projectName: projectName,
@@ -44,22 +47,24 @@ export const addProjectApi = async (
       link: Link,
       rate: Rate,
       projectid: newDocRef.id
-    }).then(function () {
-      userDatasets?.map(async (data: any) => {
-        const newColRef = doc(
-          db,
-          "projects",
-          newDocRef.id,
-          "users",
-          data.userId
-        );
-        await setDoc(newColRef, {
-          userName: data.userName,
-          userRole: data.userRole,
-          userEmail: data.userEmail,
-          userID: data.userId
-        });
-      });
+    }).then(async function () {
+      await Promise.all(
+        userDatasets?.map(async (data: any) => {
+          const newColRef = doc(
+            db,
+            "projects",
+            newDocRef.id,
+            "users",
+            data.userId
+          );
+          await setDoc(newColRef, {
+            userName: data.userName,
+            userRole: data.userRole,
+            userEmail: data.userEmail,
+            userID: data.userId
+          });
+        })
+      );
     });
   } catch (error: any) {
     throw error;
@@ -67,6 +72,7 @@ export const addProjectApi = async (
 };
 
 export const listProjectApi = async () => {
+  console.log("list Callled");
   try {
     const querySnapshot = await getDocs(collection(db, "projects"));
     const collectiondata: any = [];
@@ -83,8 +89,9 @@ export const listProjectApi = async () => {
             arr.push(userquerydata);
           })
         );
-
-        collectiondata.push({ ...projectData, userData: arr });
+        if (arr.length > 0) {
+          collectiondata.push({ ...projectData, userData: arr });
+        }
       })
     );
     return collectiondata;
@@ -97,6 +104,31 @@ export const deleteProjectApi = async (projectId: string) => {
   try {
     const deleteRef = doc(db, "projects", projectId);
     deleteDoc(deleteRef);
+
+    const deleteuserarr: Array<object> = [];
+    const DeletequerySnapshot2 = await getDocs(
+      collection(db, "projects", projectId, "users")
+    );
+
+    await Promise.all(
+      DeletequerySnapshot2.docs.map((doc) => {
+        const Edituserquerydata = doc.data();
+        deleteuserarr.push(Edituserquerydata);
+      })
+    );
+
+    await Promise.all(
+      deleteuserarr?.map(async (dataset: any) => {
+        const deleteEditRef = doc(
+          db,
+          "projects",
+          projectId,
+          "users",
+          dataset.userID
+        );
+        deleteDoc(deleteEditRef);
+      })
+    );
 
     toast("product deleted successfully", {
       position: "bottom-left",
@@ -126,7 +158,7 @@ export const editProjectApi = async (
   try {
     const userEditData: any = [];
     await Promise.all(
-      userData.map(async (dataset: any) => {
+      userData?.map(async (dataset: any) => {
         const q = query(
           collection(db, "employee"),
           where("userId", "==", dataset)
@@ -137,6 +169,30 @@ export const editProjectApi = async (
             userEditData.push(doc.data());
           })
         );
+      })
+    );
+
+    const edituserarr: Array<object> = [];
+    const EditquerySnapshot2 = await getDocs(
+      collection(db, "projects", projectId, "users")
+    );
+    await Promise.all(
+      EditquerySnapshot2.docs.map((doc) => {
+        const Edituserquerydata = doc.data();
+        edituserarr.push(Edituserquerydata);
+      })
+    );
+
+    await Promise.all(
+      edituserarr?.map(async (dataset: any) => {
+        const deleteEditRef = doc(
+          db,
+          "projects",
+          projectId,
+          "users",
+          dataset.userID
+        );
+        deleteDoc(deleteEditRef);
       })
     );
 
@@ -159,6 +215,16 @@ export const editProjectApi = async (
         userEmail: data.userEmail,
         userID: data.userId
       });
+    });
+
+    toast("product updated successfully", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
     });
   } catch (error: any) {
     throw error;

@@ -16,7 +16,7 @@ import { editEmployee } from "../../redux/slice/employee/editEmployeeSLice";
 import { employeealldata, Props } from "../../types/employee/index";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { userRole } from "../../Pages/hardCodedData";
+import { userRole } from "../../pages/hardCodedData";
 
 const validationSchema = yup.object({
   userName: yup

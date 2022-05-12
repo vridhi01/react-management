@@ -16,7 +16,7 @@ import { addProject } from "../../redux/slice/project/addProjectSlice";
 import { listProject } from "../../redux/slice/project/listProjectSlice";
 import { editProject } from "../../redux/slice/project/editProjectSLice";
 import { projectalldata } from "./index";
-import { teamDetails, prodjectType } from "../../Pages/hardCodedData";
+import { teamDetails, prodjectType } from "../../pages/hardCodedData";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -26,11 +26,11 @@ import { employeealldata } from "../../types/employee/index";
 const validationSchema = yup.object({
   projectName: yup.string().required("name is required"),
   Description: yup.string().required("Description is required"),
-  Link: yup.string(),
-  Rate: yup.string(),
-  Team: yup.string(),
-  projectType: yup.string(),
-  createdDate: yup.string(),
+  Link: yup.string().url("Must be a valid URL").required("Link is required"),
+  Rate: yup.string().required("Rate is required"),
+  Team: yup.string().required("team is required"),
+  projectType: yup.string().required("projecttype is required"),
+  createdDate: yup.string().required("projecttype is required"),
   userData: yup.array().required("assign user to project is required")
 });
 
@@ -68,13 +68,6 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
   const employeeList = useSelector(
     (state: RootState) => state.listEmployeeSlice
   );
-
-  useEffect(() => {
-    if (addProjectsuccess.projectaddingSuccess == true) {
-      dispatch(listProject());
-      setOpen(false);
-    }
-  }, [addProjectsuccess.projectaddingSuccess]);
 
   useEffect(() => {
     if (addProjectsuccess.projectaddingSuccess == true) {

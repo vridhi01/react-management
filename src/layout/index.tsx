@@ -17,7 +17,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useNavigate, Outlet } from "react-router-dom";
 import UserLogout from "./userlogout";
 import excellence from "../assests/excellence.png";
-import { drawerList } from "../Pages/hardCodedData";
+import { drawerList } from "../pages/hardCodedData";
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({

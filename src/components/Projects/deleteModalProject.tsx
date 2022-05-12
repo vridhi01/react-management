@@ -37,6 +37,7 @@ const deleteModalProject = ({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        style={{ backgroundColor: "transparent" }}
       >
         <DialogTitle id="alert-dialog-title">
           {"Are you sure you want to delete?"}

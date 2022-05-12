@@ -30,7 +30,7 @@ const Index: React.FC = () => {
   const deleteProductList = useSelector(
     (state: RootState) => state.deleteProjectSlice
   );
-  const editProductList = useSelector(
+  const editProjectList = useSelector(
     (state: RootState) => state.editProjectSlice
   );
 
@@ -47,12 +47,12 @@ const Index: React.FC = () => {
   }, [deleteProductList.projectdeleteSuccess]);
 
   useEffect(() => {
-    if (editProductList.projecteditingSuccess == true) {
+    if (editProjectList.projecteditingSuccess == true) {
       dispatch(listProject());
       setEdit(false);
       setOpen(false);
     }
-  }, [editProductList.projecteditingSuccess]);
+  }, [editProjectList.projecteditingSuccess]);
 
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);

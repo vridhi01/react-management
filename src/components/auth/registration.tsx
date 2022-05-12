@@ -16,7 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useAuthState } from "../../context/AppContextData";
 import { useNavigate } from "react-router";
 import excellence from "../../assests/excellence.png";
-import { userRole } from "../../Pages/hardCodedData";
+import { userRole } from "../../pages/hardCodedData";
 /**
  * Home Page of the Application
  * @return {JSX.Element}
