@@ -1,16 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addProjectApi } from "../../../api/projectapi";
-
-interface addProject {
-  projectName: string | any;
-  projectType: string | any;
-  createdDate: string | any;
-  Description: string | any;
-  Link: string | any;
-  Rate: string | any;
-  Team: string | any;
-  userData: any | any;
-}
+import { addProjectData } from "../../../types/projects";
 
 export const addProject = createAsyncThunk(
   "/addProject",
@@ -23,8 +13,10 @@ export const addProject = createAsyncThunk(
       Link,
       Rate,
       Team,
-      userData
-    }: addProject,
+      userData,
+      clientName,
+      endedDate
+    }: addProjectData,
     thunkAPI
   ) => {
     try {
@@ -36,7 +28,9 @@ export const addProject = createAsyncThunk(
         Link,
         Rate,
         Team,
-        userData
+        userData,
+        clientName,
+        endedDate
       );
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

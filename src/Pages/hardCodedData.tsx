@@ -33,3 +33,5 @@ export const drawerList = [
     projectIcon: <GroupOutlinedIcon />
   }
 ];
+
+export const projectStatus = ["taskcomplete", "taskpending"];

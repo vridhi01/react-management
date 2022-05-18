@@ -1,17 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { editProjectApi } from "../../../api/projectapi";
-
-interface editProjectData {
-  projectName: string | any;
-  projectType: string | any;
-  createdDate: string | any;
-  Description: string | any;
-  Link: string | any;
-  Rate: string | any;
-  Team: string | any;
-  projectId: string | any;
-  userData: any;
-}
+import { editProjectData } from "../../../types/projects";
 
 export const editProject = createAsyncThunk(
   "/editProject",
@@ -25,6 +14,8 @@ export const editProject = createAsyncThunk(
       Rate,
       Team,
       projectId,
+      clientName,
+      endedDate,
       userData
     }: editProjectData,
     thunkAPI
@@ -38,6 +29,8 @@ export const editProject = createAsyncThunk(
         Link,
         Rate,
         Team,
+        clientName,
+        endedDate,
         projectId,
         userData
       );

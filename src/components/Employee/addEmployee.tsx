@@ -47,7 +47,7 @@ const AddEmployee = ({ edit, editData, open, setOpen }: Props) => {
   );
 
   useEffect(() => {
-    if (addEmployeesuccess.employeeaddingSuccess == true) {
+    if (addEmployeesuccess.employeeaddingSuccess) {
       dispatch(listEmployee());
       setOpen(false);
     }

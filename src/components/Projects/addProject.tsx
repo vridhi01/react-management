@@ -5,26 +5,29 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Formik } from "formik";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/rootReducer";
-import { useDispatch } from "react-redux";
-import * as yup from "yup";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { addProject } from "../../redux/slice/project/addProjectSlice";
-import { listProject } from "../../redux/slice/project/listProjectSlice";
-import { editProject } from "../../redux/slice/project/editProjectSLice";
-import { projectalldata } from "./index";
-import { teamDetails, prodjectType } from "../../pages/hardCodedData";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { Theme, useTheme } from "@mui/material/styles";
+import { Formik } from "formik";
+import * as yup from "yup";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
+import { useDispatch } from "react-redux";
+import { addProject } from "../../redux/slice/project/addProjectSlice";
+import { listProject } from "../../redux/slice/project/listProjectSlice";
+import { editProject } from "../../redux/slice/project/editProjectSLice";
 import { employeealldata } from "../../types/employee/index";
+import { projectProps } from "../../types/projects/index";
+import { projectalldata } from "../../types/projects/index";
+import { filterUserData } from "../../types/projects/index";
+import { teamDetails, prodjectType } from "../../pages/hardCodedData";
 
 const validationSchema = yup.object({
   projectName: yup.string().required("name is required"),
+  clientName: yup.string().required("CLient name is required"),
   Description: yup.string().required("Description is required"),
   Link: yup.string().url("Must be a valid URL").required("Link is required"),
   Rate: yup.string().required("Rate is required"),
@@ -34,20 +37,13 @@ const validationSchema = yup.object({
   userData: yup.array().required("assign user to project is required")
 });
 
-type Props = {
-  editData: projectalldata | null;
-  open: boolean;
-  edit: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
 const getStyles = (name: string, personName: string[], theme: Theme) => {
   return {
     fontWeight: personName.indexOf(name) === -1 ? 400 : 700
   };
 };
 
-const AddProject = ({ edit, editData, open, setOpen }: Props) => {
+const AddProject = ({ edit, editData, open, setOpen }: projectProps) => {
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -70,11 +66,11 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
   );
 
   useEffect(() => {
-    if (addProjectsuccess.projectaddingSuccess == true) {
+    if (addProjectsuccess.projectaddingSuccess) {
       dispatch(listProject());
       setOpen(false);
     }
-  }, [addProjectsuccess.projectaddingSuccess]);
+  }, [addProjectsuccess]);
 
   const handleClose = () => {
     setOpen(false);
@@ -93,10 +89,12 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
 
   const initialValues = {
     projectName: edit ? iseditItem?.projectName : "",
+    clientName: edit ? iseditItem?.clientName : "",
     Description: edit ? iseditItem?.description : "",
     Link: edit ? iseditItem?.link : "",
     Rate: edit ? iseditItem?.rate : "",
     createdDate: edit ? iseditItem?.createdDate : "",
+    endedDate: edit ? iseditItem?.endedDate : "",
     projectType: edit ? iseditItem?.projectType : "fixed Price",
     Team: edit ? iseditItem?.team : "nodejs",
     projectid: edit ? iseditItem?.projectid : "",
@@ -144,8 +142,10 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
               edit
                 ? editProject({
                     projectName: values.projectName,
+                    clientName: values.clientName,
                     projectType: values.projectType,
                     createdDate: values.createdDate,
+                    endedDate: values.endedDate,
                     Description: values.Description,
                     Link: values.Link,
                     Rate: values.Rate,
@@ -155,8 +155,10 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                   })
                 : addProject({
                     projectName: values.projectName,
+                    clientName: values.clientName,
                     projectType: values.projectType,
                     createdDate: values.createdDate,
+                    endedDate: values.endedDate,
                     Description: values.Description,
                     Link: values.Link,
                     Rate: values.Rate,
@@ -307,6 +309,33 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                         </div>
                       </LocalizationProvider>
 
+                      <LocalizationProvider
+                        dateAdapter={AdapterDateFns}
+                        className="w-full"
+                      >
+                        <div>
+                          <label className="block">Ended Date</label>
+                          <TextField
+                            type="date"
+                            placeholder="Enter Date"
+                            name="endedDate"
+                            autoComplete="off"
+                            className=" mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                            onChange={(e) => {
+                              handleChange(e);
+                              setTouched({ ...touched, ["endedDate"]: true });
+                            }}
+                            value={values.endedDate}
+                            error={
+                              touched.endedDate && Boolean(errors.endedDate)
+                            }
+                          />
+                          <p className="text-red-600 text-xs">
+                            {touched.endedDate && errors.endedDate}
+                          </p>
+                        </div>
+                      </LocalizationProvider>
+
                       <div>
                         <label className="block">Team</label>
                         <Select
@@ -330,6 +359,28 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                         </Select>
                         <p className="text-red-600 text-xs">
                           {touched.Team && errors.Team}
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block">Client Name</label>
+                        <TextField
+                          type="text"
+                          placeholder="Client Name"
+                          name="clientName"
+                          autoComplete="off"
+                          className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                          onChange={(e) => {
+                            handleChange(e);
+                            setTouched({ ...touched, ["clientName"]: true });
+                          }}
+                          value={values.clientName}
+                          error={
+                            touched.clientName && Boolean(errors.clientName)
+                          }
+                        />
+                        <p className="text-red-600 text-xs">
+                          {touched.clientName && errors.clientName}
                         </p>
                       </div>
                     </div>
@@ -378,8 +429,11 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                       >
                         {employeeList &&
                           employeeList.employeeData &&
-                          employeeList?.employeeData?.map(
-                            (data: employeealldata) => {
+                          employeeList.employeeData
+                            .filter((data: filterUserData) => {
+                              return data.userRole != "Admin";
+                            })
+                            .map((data: employeealldata) => {
                               return (
                                 <MenuItem
                                   key={data.userId}
@@ -393,8 +447,7 @@ const AddProject = ({ edit, editData, open, setOpen }: Props) => {
                                   {data.userName}
                                 </MenuItem>
                               );
-                            }
-                          )}
+                            })}
                       </Select>
                     </div>
                   </DialogContent>

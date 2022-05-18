@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import IconButton from "@mui/material/IconButton";
 import { ToastContainer } from "react-toastify";
 import AddProject from "./addProject";
 import { useDispatch } from "react-redux";
@@ -7,22 +6,11 @@ import { useSelector } from "react-redux";
 import { listProject } from "../../redux/slice/project/listProjectSlice";
 import { RootState } from "../../redux/rootReducer";
 import CircularProgress from "@mui/material/CircularProgress";
-import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteProject from "./deleteModalProject";
-import EditIcon from "@mui/icons-material/Edit";
 import { listEmployee } from "../../redux/slice/employee/listEmployeeSlice";
-
-export interface projectalldata {
-  projectName: string;
-  link: string;
-  description: string;
-  rate: string;
-  team: string;
-  createdDate: string;
-  projectType: string;
-  projectid: string;
-  userData: any;
-}
+import { projectalldata } from "../../types/projects/index";
+import ProjectList from "./projectList";
+import MoreDetails from "./moreDetails";
 
 const Index: React.FC = () => {
   const dispatch = useDispatch();
@@ -40,14 +28,14 @@ const Index: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (deleteProductList.projectdeleteSuccess == true) {
+    if (deleteProductList.projectdeleteSuccess) {
       dispatch(listProject());
       setDeleteOpen(false);
     }
   }, [deleteProductList.projectdeleteSuccess]);
 
   useEffect(() => {
-    if (editProjectList.projecteditingSuccess == true) {
+    if (editProjectList.projecteditingSuccess) {
       dispatch(listProject());
       setEdit(false);
       setOpen(false);
@@ -59,6 +47,14 @@ const Index: React.FC = () => {
   const [editData, setEditData] = useState({} as projectalldata);
   const [deleteid, setDeleteId] = useState({} as string);
   const [deleteopen, setDeleteOpen] = useState(false);
+  const [projectMoreOpen, setProjectMoreOpen] = useState(false);
+  const [projectMoreData, setProjectMoreData] = useState({
+    description: "",
+    link: "",
+    projectName: "",
+    endedDate: ""
+  });
+
   const handleCardClick = (data: any) => {
     setOpen(true);
     setEditData(data);
@@ -68,6 +64,21 @@ const Index: React.FC = () => {
   const handleDeleteClick = (projectid: string) => {
     setDeleteId(projectid);
     setDeleteOpen(true);
+  };
+
+  const handleProjectMoredetails = (
+    description: string,
+    link: string,
+    projectName: string,
+    endedDate: string
+  ) => {
+    setProjectMoreOpen(true);
+    setProjectMoreData({
+      description: description,
+      link: link,
+      projectName: projectName,
+      endedDate: endedDate
+    });
   };
 
   useEffect(() => {
@@ -89,80 +100,27 @@ const Index: React.FC = () => {
       {projectList?.isprojectlistloading == true ? (
         <CircularProgress />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-5 m-8 gap-4">
-          {projectList &&
-            projectList.projectData &&
-            projectList?.projectData?.map((data: projectalldata) => {
-              return (
-                <>
-                  <div className="shadow-md rounded font-medium  p-5 my-5">
-                    <div>
-                      <div className="flex justify-between">
-                        <div className="text-black text-left font-bold">
-                          {data.projectName}
-                        </div>
-                        <div className="text-black text-left text-xs contents">
-                          {data.projectType}
-                        </div>
-                      </div>{" "}
-                      <div className="flex justify-between">
-                        <div className="font-light text-sm text-left py-1 text-gray-500">
-                          {data.createdDate}
-                        </div>
-                        <div className="font-light text-xs text-left  text-gray-500">
-                          {data.rate}
-                        </div>
-                      </div>
-                      <div className="font-light text-sm text-left">
-                        {data.description}
-                      </div>
-                      <div className="font-light text-xs text-left py-2">
-                        <a target="_blank" href={data.link} rel="noreferrer">
-                          {data.link}
-                        </a>
-                      </div>
-                      <div className="font-light text-sm text-left ">
-                        {data.team}
-                      </div>
-                      {data?.userData?.map((text: any) => {
-                        return (
-                          <>
-                            <div className="font-light text-xs text-left py-2">
-                              {text.userName}
-                            </div>
-                          </>
-                        );
-                      })}
-                    </div>
-                    <DeleteProject
-                      deleteopen={deleteopen}
-                      setDeleteOpen={setDeleteOpen}
-                      deleteid={deleteid}
-                    />
-                    <div className="flex justify-end">
-                      <div
-                        onClick={() => handleCardClick(data)}
-                        key={data.projectid}
-                      >
-                        {" "}
-                        <IconButton>
-                          <EditIcon />
-                        </IconButton>
-                      </div>
-                      <div
-                        onClick={() => {
-                          handleDeleteClick(data.projectid);
-                        }}
-                      >
-                        <IconButton>
-                          <DeleteIcon />
-                        </IconButton>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
+        <>
+          {projectList && projectList.projectData && (
+            <ProjectList
+              projectData={projectList.projectData}
+              handleProjectCardClick={handleCardClick}
+              handleProjectDeleteClick={handleDeleteClick}
+              handleProjectMoredetails={handleProjectMoredetails}
+            />
+          )}
+
+          <MoreDetails
+            projectMoreData={projectMoreData}
+            setProjectMoreOpen={setProjectMoreOpen}
+            projectMoreOpen={projectMoreOpen}
+          />
+
+          <DeleteProject
+            deleteopen={deleteopen}
+            setDeleteOpen={setDeleteOpen}
+            deleteid={deleteid}
+          />
 
           <ToastContainer
             position="bottom-left"
@@ -175,7 +133,7 @@ const Index: React.FC = () => {
             draggable
             pauseOnHover
           />
-        </div>
+        </>
       )}
     </>
   );

@@ -27,14 +27,14 @@ const Index: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (deleteUserList.employeedeleteSuccess == true) {
+    if (deleteUserList.employeedeleteSuccess) {
       dispatch(listEmployee());
       setDeleteOpen(false);
     }
-  }, [deleteUserList.employeedeleteSuccess]);
+  }, [deleteUserList]);
 
   useEffect(() => {
-    if (editEmployeeList.employeeeditingSuccess == true) {
+    if (editEmployeeList.employeeeditingSuccess) {
       dispatch(listEmployee());
       setEdit(false);
       setOpen(false);

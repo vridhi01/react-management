@@ -19,7 +19,9 @@ export const addProjectApi = async (
   Link: string,
   Rate: string,
   Team: string,
-  userData: any
+  userData: any,
+  clientName: string,
+  endedDate: string
 ) => {
   try {
     const userDatasets: any = [];
@@ -43,6 +45,8 @@ export const addProjectApi = async (
       projectType: projectType,
       createdDate: createdDate,
       description: Description,
+      clientName: clientName,
+      endedDate: endedDate,
       team: Team,
       link: Link,
       rate: Rate,
@@ -72,7 +76,6 @@ export const addProjectApi = async (
 };
 
 export const listProjectApi = async () => {
-  console.log("list Callled");
   try {
     const querySnapshot = await getDocs(collection(db, "projects"));
     const collectiondata: any = [];
@@ -152,6 +155,8 @@ export const editProjectApi = async (
   Link: string,
   Rate: string,
   Team: string,
+  clientName: string,
+  endedDate: string,
   projectId: string,
   userData: any
 ) => {
@@ -201,10 +206,12 @@ export const editProjectApi = async (
       projectName: projectName,
       projectType: projectType,
       createdDate: createdDate,
+      endedDate: endedDate,
       description: Description,
       link: Link,
       rate: Rate,
-      team: Team
+      team: Team,
+      clientName: clientName
     });
 
     userEditData?.map(async (data: any) => {
