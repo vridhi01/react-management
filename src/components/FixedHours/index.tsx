@@ -19,13 +19,13 @@ import * as yup from "yup";
 const validationSchema = yup.object({
   projectTasks: yup.string().required("projectTasks is required"),
   tasksStatus: yup.string().required("tasksStatus is required"),
-  pendingReason: yup.string().required("reason is required")
+  timepicker: yup.string().required("project hours is required")
 });
 
 const FixedHours = ({ fixedHours, setFixedHours }: any) => {
-  const [value, setValue] = React.useState<Date | null>(
-    new Date("2018-01-01T00:00:00")
-  );
+  // const [value, setValue] = React.useState<Date | null>(
+  //   new Date("2018-01-01T00:00:00")
+  // );
   // const dispatch = useDispatch();
 
   const handleFixedForm = () => {
@@ -39,34 +39,40 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
   };
   return (
     <>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        enableReinitialize={true}
-        onSubmit={(values, actions) => {
-          // dispatch();
-        }}
-      >
-        {({
-          values,
-          touched,
-          handleChange,
-          handleSubmit,
-          setTouched,
-          setValues,
-          errors,
-          ...rest
-        }) => {
-          console.log(values);
+      <Dialog open={fixedHours} onClose={handleFixedForm} fullWidth>
+        {" "}
+        <DialogTitle className="text-center">
+          {" "}
+          Add Project Task Details
+        </DialogTitle>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          enableReinitialize={true}
+          onSubmit={(values, actions) => {
+            // dispatch();
+            console.log(values, actions, "ppppppppp");
+          }}
+        >
+          {({
+            values,
+            touched,
+            handleChange,
+            handleSubmit,
+            setTouched,
+            setValues,
+            setFieldValue,
+            errors,
+            ...rest
+          }) => {
+            console.log(values, "llll");
 
-          return (
-            <form>
-              <Dialog open={fixedHours} onClose={handleFixedForm} fullWidth>
-                {" "}
-                <DialogTitle className="text-center">
-                  {" "}
-                  Add Project Task Details
-                </DialogTitle>
+            return (
+              <form
+                onSubmit={(e) => {
+                  handleSubmit(e);
+                }}
+              >
                 <DialogContent>
                   <label className="block">Project Hours</label>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -74,14 +80,22 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
                       <TimePicker
                         ampm={false}
                         ampmInClock={false}
-                        value={value}
-                        onChange={setValue}
-                        renderInput={(params) => (
-                          <TextField {...params} name="timepicker" />
-                        )}
+                        value={values.timepicker}
+                        onChange={(value) => {
+                          setFieldValue("timepicker", value);
+                          setTouched({ ...touched, ["timepicker"]: true });
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
                       />
                     </Stack>
                   </LocalizationProvider>
+                  {values?.timepicker == "Invalid Date" ? (
+                    <p className="text-red-600 text-xs">Invalid Date</p>
+                  ) : (
+                    <p className="text-red-600 text-xs">
+                      {touched.timepicker && errors.timepicker}
+                    </p>
+                  )}
 
                   <div className="mt-4">
                     <label className="block">Tasks</label>
@@ -92,16 +106,28 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
                       autoComplete="off"
                       multiline
                       rows={4}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setTouched({ ...touched, ["projectTasks"]: true });
+                      }}
+                      value={values.projectTasks}
                       className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                     />
+                    <p className="text-red-600 text-xs">
+                      {touched.projectTasks && errors.projectTasks}
+                    </p>
                   </div>
-
                   <div className="mt-4">
                     <label className="block"> Tasks Status</label>
                     <Select
                       className="w-full rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                       name="tasksStatus"
                       autoComplete="off"
+                      onChange={(e) => {
+                        handleChange(e);
+                        setTouched({ ...touched, ["tasksStatus"]: true });
+                      }}
+                      value={values.tasksStatus}
                     >
                       {projectStatus.map((team, key) => {
                         return (
@@ -111,29 +137,42 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
                         );
                       })}
                     </Select>
+                    <p className="text-red-600 text-xs">
+                      {touched.tasksStatus && errors.tasksStatus}
+                    </p>
                   </div>
-
-                  <div className="mt-4">
-                    <label className="block">Reason For pending</label>
-                    <TextField
-                      type="text"
-                      placeholder="Enter the Reason"
-                      name="pendingReason"
-                      autoComplete="off"
-                      multiline
-                      rows={4}
-                      className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                    />
-                  </div>
+                  {values.tasksStatus == "taskpending" ? (
+                    <div className="mt-4">
+                      <label className="block">Reason For pending</label>
+                      <TextField
+                        type="text"
+                        placeholder="Enter the Reason"
+                        name="pendingReason"
+                        autoComplete="off"
+                        multiline
+                        rows={4}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setTouched({ ...touched, ["pendingReason"]: true });
+                        }}
+                        className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                      <p className="text-red-600 text-xs">
+                        {touched.pendingReason && errors.pendingReason}
+                      </p>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </DialogContent>
                 <DialogActions>
                   <Button type="submit">submit</Button>
                 </DialogActions>
-              </Dialog>
-            </form>
-          );
-        }}
-      </Formik>
+              </form>
+            );
+          }}
+        </Formik>
+      </Dialog>
     </>
   );
 };
