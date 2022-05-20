@@ -6,12 +6,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Formik } from "formik";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/rootReducer";
 import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import { addEmployee } from "../../redux/slice/employee/addEmployeeSlice";
-import { listEmployee } from "../../redux/slice/employee/listEmployeeSlice";
 import { editEmployee } from "../../redux/slice/employee/editEmployeeSLice";
 import { employeealldata, Props } from "../../types/employee/index";
 import Select from "@mui/material/Select";
@@ -36,22 +33,12 @@ const AddEmployee = ({ edit, editData, open, setOpen }: Props) => {
   };
 
   const [iseditItem, setIsEditItem] = useState<null | employeealldata>();
+
   useEffect(() => {
     if (edit) {
       setIsEditItem(editData);
     }
   }, [edit]);
-
-  const addEmployeesuccess = useSelector(
-    (state: RootState) => state.addEmployeeSlice
-  );
-
-  useEffect(() => {
-    if (addEmployeesuccess.employeeaddingSuccess) {
-      dispatch(listEmployee());
-      setOpen(false);
-    }
-  }, [addEmployeesuccess.employeeaddingSuccess]);
 
   const handleClose = () => {
     setOpen(false);

@@ -17,7 +17,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
 import { useDispatch } from "react-redux";
 import { addProject } from "../../redux/slice/project/addProjectSlice";
-import { listProject } from "../../redux/slice/project/listProjectSlice";
 import { editProject } from "../../redux/slice/project/editProjectSLice";
 import { employeealldata } from "../../types/employee/index";
 import { projectProps } from "../../types/projects/index";
@@ -33,7 +32,7 @@ const validationSchema = yup.object({
   Rate: yup.string().required("Rate is required"),
   Team: yup.string().required("team is required"),
   projectType: yup.string().required("projecttype is required"),
-  createdDate: yup.string().required("projecttype is required"),
+  createdDate: yup.string().required("date is required"),
   userData: yup.array().required("assign user to project is required")
 });
 
@@ -57,20 +56,9 @@ const AddProject = ({ edit, editData, open, setOpen }: projectProps) => {
     }
   }, [edit]);
 
-  const addProjectsuccess = useSelector(
-    (state: RootState) => state.addProjectSlice
-  );
-
   const employeeList = useSelector(
     (state: RootState) => state.listEmployeeSlice
   );
-
-  useEffect(() => {
-    if (addProjectsuccess.projectaddingSuccess) {
-      dispatch(listProject());
-      setOpen(false);
-    }
-  }, [addProjectsuccess]);
 
   const handleClose = () => {
     setOpen(false);
@@ -449,6 +437,9 @@ const AddProject = ({ edit, editData, open, setOpen }: projectProps) => {
                               );
                             })}
                       </Select>
+                      <p className="text-red-600 text-xs">
+                        {touched.userData && errors.userData}
+                      </p>
                     </div>
                   </DialogContent>
                   <DialogActions>

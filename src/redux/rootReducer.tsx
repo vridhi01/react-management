@@ -10,6 +10,7 @@ import addEmployeeSlice from "./slice/employee/addEmployeeSlice";
 import listEmployeeSlice from "./slice/employee/listEmployeeSlice";
 import editEmployeeSLice from "./slice/employee/editEmployeeSLice";
 import deleteEmployeeSlice from "./slice/employee/deleteEmployeeSlice";
+import fixedHoursSlice from "./slice/project/fixedHoursSlice";
 const rootReducer = combineReducers({
   userlogin: loginSlice,
   userSignup: registrationSlice,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   addEmployeeSlice: addEmployeeSlice,
   listEmployeeSlice: listEmployeeSlice,
   editEmployeeSLice: editEmployeeSLice,
-  deleteEmployeeSlice: deleteEmployeeSlice
+  deleteEmployeeSlice: deleteEmployeeSlice,
+  fixedHoursSlice: fixedHoursSlice
 });
 
 export interface RootState {
@@ -62,6 +64,9 @@ export interface RootState {
   };
   deleteEmployeeSlice: {
     employeedeleteSuccess: boolean;
+  };
+  fixedHoursSlice: {
+    fixedtaskaddingSuccess: boolean;
   };
 }
 

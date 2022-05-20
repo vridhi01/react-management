@@ -70,6 +70,16 @@ export const addProjectApi = async (
         })
       );
     });
+
+    toast("Project added successfully", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
   } catch (error: any) {
     throw error;
   }
@@ -97,6 +107,7 @@ export const listProjectApi = async () => {
         }
       })
     );
+    console.log(collectiondata, "collectiondata");
     return collectiondata;
   } catch (error: any) {
     throw error;
@@ -133,7 +144,7 @@ export const deleteProjectApi = async (projectId: string) => {
       })
     );
 
-    toast("product deleted successfully", {
+    toast("Project deleted successfully", {
       position: "bottom-left",
       autoClose: 5000,
       hideProgressBar: false,
@@ -224,7 +235,7 @@ export const editProjectApi = async (
       });
     });
 
-    toast("product updated successfully", {
+    toast("Project updated successfully", {
       position: "bottom-left",
       autoClose: 5000,
       hideProgressBar: false,

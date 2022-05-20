@@ -18,11 +18,7 @@ const ProjectList = (props: listprojectData) => {
 
   return (
     <>
-      {fixedHours ? (
-        <FixedHours fixedHours={fixedHours} setFixedHours={setFixedHours} />
-      ) : (
-        ""
-      )}
+      <FixedHours fixedHours={fixedHours} setFixedHours={setFixedHours} />
 
       <div className="flex gap-10 justify-center">
         <div className="overflow-x-auto">

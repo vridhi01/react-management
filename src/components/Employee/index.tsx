@@ -22,6 +22,17 @@ const Index: React.FC = () => {
     (state: RootState) => state.editEmployeeSLice
   );
 
+  const addEmployeesuccess = useSelector(
+    (state: RootState) => state.addEmployeeSlice
+  );
+
+  useEffect(() => {
+    if (addEmployeesuccess.employeeaddingSuccess) {
+      dispatch(listEmployee());
+      setOpen(false);
+    }
+  }, [addEmployeesuccess.employeeaddingSuccess]);
+
   useEffect(() => {
     dispatch(listEmployee());
   }, []);
@@ -62,9 +73,22 @@ const Index: React.FC = () => {
       setEdit(false);
     }
   }, [open]);
+
   return (
     <>
       <div className="flex justify-end p-5">
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+
         <AddProject
           edit={edit}
           editData={editData}
@@ -88,18 +112,6 @@ const Index: React.FC = () => {
             deleteopen={deleteopen}
             setDeleteOpen={setDeleteOpen}
             deleteid={deleteid}
-          />
-
-          <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
           />
         </>
       )}

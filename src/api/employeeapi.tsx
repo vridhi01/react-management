@@ -21,6 +21,15 @@ export const addEmployeeApi = async (
       userEmail: userEmail,
       userId: newDocRef.id
     });
+    toast("employee added successfully", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
   } catch (error: any) {
     throw error;
   }

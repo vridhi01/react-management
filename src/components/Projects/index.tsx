@@ -22,10 +22,21 @@ const Index: React.FC = () => {
     (state: RootState) => state.editProjectSlice
   );
 
+  const addProjectsuccess = useSelector(
+    (state: RootState) => state.addProjectSlice
+  );
+
   useEffect(() => {
     dispatch(listProject());
     dispatch(listEmployee());
   }, []);
+
+  useEffect(() => {
+    if (addProjectsuccess.projectaddingSuccess) {
+      dispatch(listProject());
+      setOpen(false);
+    }
+  }, [addProjectsuccess.projectaddingSuccess]);
 
   useEffect(() => {
     if (deleteProductList.projectdeleteSuccess) {
@@ -89,6 +100,17 @@ const Index: React.FC = () => {
   return (
     <>
       <div className="flex justify-end p-5">
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <AddProject
           edit={edit}
           editData={editData}
@@ -120,18 +142,6 @@ const Index: React.FC = () => {
             deleteopen={deleteopen}
             setDeleteOpen={setDeleteOpen}
             deleteid={deleteid}
-          />
-
-          <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
           />
         </>
       )}

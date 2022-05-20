@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Stack from "@mui/material/Stack";
@@ -14,19 +14,30 @@ import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import { Formik } from "formik";
 import * as yup from "yup";
-// import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { fixedProject } from "../../redux/slice/project/fixedHoursSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
+import { ToastContainer } from "react-toastify";
 
 const validationSchema = yup.object({
-  projectTasks: yup.string().required("projectTasks is required"),
-  tasksStatus: yup.string().required("tasksStatus is required"),
-  timepicker: yup.string().required("project hours is required")
+  projectTasks: yup.string().required("Project Tasks is required"),
+  tasksStatus: yup.string().required("Tasks Status is required"),
+  timepicker: yup.string().required("Project Hours is required")
 });
 
 const FixedHours = ({ fixedHours, setFixedHours }: any) => {
-  // const [value, setValue] = React.useState<Date | null>(
-  //   new Date("2018-01-01T00:00:00")
-  // );
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
+  const addFixedHourssuccess = useSelector(
+    (state: RootState) => state.fixedHoursSlice
+  );
+
+  useEffect(() => {
+    if (addFixedHourssuccess.fixedtaskaddingSuccess) {
+      setFixedHours(false);
+    }
+  }, [addFixedHourssuccess]);
 
   const handleFixedForm = () => {
     setFixedHours(false);
@@ -37,6 +48,7 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
     pendingReason: "",
     timepicker: ""
   };
+
   return (
     <>
       <Dialog open={fixedHours} onClose={handleFixedForm} fullWidth>
@@ -50,8 +62,14 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
           validationSchema={validationSchema}
           enableReinitialize={true}
           onSubmit={(values, actions) => {
-            // dispatch();
-            console.log(values, actions, "ppppppppp");
+            dispatch(
+              fixedProject({
+                pendingReason: values.pendingReason,
+                projectTasks: values.projectTasks,
+                tasksStatus: values.tasksStatus,
+                timepicker: values.timepicker
+              })
+            );
           }}
         >
           {({
@@ -65,8 +83,6 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
             errors,
             ...rest
           }) => {
-            console.log(values, "llll");
-
             return (
               <form
                 onSubmit={(e) => {
@@ -75,7 +91,10 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
               >
                 <DialogContent>
                   <label className="block">Project Hours</label>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDateFns}
+                    style={{ borderColor: "#e5e7eb !important" }}
+                  >
                     <Stack spacing={3}>
                       <TimePicker
                         ampm={false}
@@ -83,7 +102,6 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
                         value={values.timepicker}
                         onChange={(value) => {
                           setFieldValue("timepicker", value);
-                          setTouched({ ...touched, ["timepicker"]: true });
                         }}
                         renderInput={(params) => <TextField {...params} />}
                       />
@@ -108,7 +126,6 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
                       rows={4}
                       onChange={(e) => {
                         handleChange(e);
-                        setTouched({ ...touched, ["projectTasks"]: true });
                       }}
                       value={values.projectTasks}
                       className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
@@ -125,7 +142,6 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
                       autoComplete="off"
                       onChange={(e) => {
                         handleChange(e);
-                        setTouched({ ...touched, ["tasksStatus"]: true });
                       }}
                       value={values.tasksStatus}
                     >
@@ -172,6 +188,17 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
             );
           }}
         </Formik>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </Dialog>
     </>
   );
