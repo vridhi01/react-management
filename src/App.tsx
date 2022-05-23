@@ -10,6 +10,7 @@ import Home from "./pages/home";
 import AdminLayout from "./layout/index";
 import PrivateRoute from "./routes/PrivateRoute";
 import { NoMatch } from "./routes/NoMatch";
+import ProjectDetails from "./components/Projects/projectDetails";
 
 /**
  * Home Page of the Application
@@ -34,6 +35,7 @@ const App: React.FC = () => {
           >
             <Route path="home" element={<Home />} />
             <Route path="projects" element={<Project />} />
+            <Route path="project_details" element={<ProjectDetails />} />
             <Route path="users" element={<Employee />} />
           </Route>
         </Routes>

@@ -1,25 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { listprojectData } from "../../types/projects/index";
 import Delete from "../../assests/delete.svg";
 import Edit from "../../assests/edit.svg";
-import FixedHours from "../FixedHours/index";
+
+import { useNavigate } from "react-router-dom";
 
 const ProjectList = (props: listprojectData) => {
-  const {
-    projectData,
-    handleProjectCardClick,
-    handleProjectDeleteClick,
-    handleProjectMoredetails
-  } = props;
-  const [fixedHours, setFixedHours] = useState(false);
-  const handleFixedPriceCLick = () => {
-    setFixedHours(true);
-  };
+  const { projectData, handleProjectCardClick, handleProjectDeleteClick } =
+    props;
+
+  const navigate = useNavigate();
 
   return (
     <>
-      <FixedHours fixedHours={fixedHours} setFixedHours={setFixedHours} />
-
       <div className="flex gap-10 justify-center">
         <div className="overflow-x-auto">
           <div className="min-w-screen flex items-center overflow-hidden">
@@ -36,27 +29,28 @@ const ProjectList = (props: listprojectData) => {
                       <th className="py-3 px-6 text-center">Client</th>
                       <th className="py-3 px-6 text-center">Type</th>
                       <th className="py-3 px-6 text-center">Actions</th>
-                      <th className="py-3 px-6 text-center">More Details</th>
                     </tr>
                   </thead>
                   <tbody className="text-gray-600 text-sm font-light">
                     {projectData.map((projectObject) => {
                       const {
                         createdDate,
-                        description,
-                        link,
                         projectName,
                         projectType,
                         rate,
                         team,
                         projectid,
-                        clientName,
-                        endedDate
+                        clientName
                       } = projectObject;
                       return (
                         <tr
                           key={projectid}
-                          className="border-b border-gray-200 hover:bg-gray-100"
+                          className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => {
+                            navigate("/project_details", {
+                              state: projectObject
+                            });
+                          }}
                         >
                           <td className="py-3 px-6 text-left whitespace-nowrap">
                             <div className="flex items-center">
@@ -97,10 +91,7 @@ const ProjectList = (props: listprojectData) => {
                           </td>
                           <td className="py-3 px-6 text-center">
                             {projectType == "fixed Price" ? (
-                              <button
-                                className="bg-purple-200 text-purple-600 py-1 px-3 hover:bg-purple-300 rounded-full text-xs"
-                                onClick={handleFixedPriceCLick}
-                              >
+                              <button className="bg-purple-200 text-purple-600 py-1 px-3 hover:bg-purple-300 rounded-full text-xs">
                                 {projectType}
                               </button>
                             ) : (
@@ -129,23 +120,6 @@ const ProjectList = (props: listprojectData) => {
                                 <img src={Delete} />
                               </div>
                             </div>
-                          </td>
-                          <td>
-                            <button
-                              className={
-                                "bg-blue-200 text-Blue-600 py-1 px-3 hover:bg-blue-300 text-xs"
-                              }
-                              onClick={() =>
-                                handleProjectMoredetails(
-                                  description,
-                                  link,
-                                  projectName,
-                                  endedDate
-                                )
-                              }
-                            >
-                              More Details
-                            </button>
                           </td>
                         </tr>
                       );

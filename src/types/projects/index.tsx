@@ -68,13 +68,6 @@ export type listprojectData = {
 
   handleProjectDeleteClick: (projectid: string) => void;
 
-  handleProjectMoredetails: (
-    description: string,
-    link: string,
-    projectName: string,
-    endedDate: string
-  ) => void;
-
   handleProjectCardClick: (data: {
     projectName: string;
     link: string;

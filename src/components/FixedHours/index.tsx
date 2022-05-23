@@ -46,11 +46,22 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
     projectTasks: "",
     tasksStatus: "",
     pendingReason: "",
-    timepicker: ""
+    timepicker: null
   };
 
   return (
     <>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Dialog open={fixedHours} onClose={handleFixedForm} fullWidth>
         {" "}
         <DialogTitle className="text-center">
@@ -188,17 +199,6 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
             );
           }}
         </Formik>
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
       </Dialog>
     </>
   );

@@ -10,7 +10,6 @@ import DeleteProject from "./deleteModalProject";
 import { listEmployee } from "../../redux/slice/employee/listEmployeeSlice";
 import { projectalldata } from "../../types/projects/index";
 import ProjectList from "./projectList";
-import MoreDetails from "./moreDetails";
 
 const Index: React.FC = () => {
   const dispatch = useDispatch();
@@ -58,13 +57,6 @@ const Index: React.FC = () => {
   const [editData, setEditData] = useState({} as projectalldata);
   const [deleteid, setDeleteId] = useState({} as string);
   const [deleteopen, setDeleteOpen] = useState(false);
-  const [projectMoreOpen, setProjectMoreOpen] = useState(false);
-  const [projectMoreData, setProjectMoreData] = useState({
-    description: "",
-    link: "",
-    projectName: "",
-    endedDate: ""
-  });
 
   const handleCardClick = (data: any) => {
     setOpen(true);
@@ -75,21 +67,6 @@ const Index: React.FC = () => {
   const handleDeleteClick = (projectid: string) => {
     setDeleteId(projectid);
     setDeleteOpen(true);
-  };
-
-  const handleProjectMoredetails = (
-    description: string,
-    link: string,
-    projectName: string,
-    endedDate: string
-  ) => {
-    setProjectMoreOpen(true);
-    setProjectMoreData({
-      description: description,
-      link: link,
-      projectName: projectName,
-      endedDate: endedDate
-    });
   };
 
   useEffect(() => {
@@ -128,15 +105,8 @@ const Index: React.FC = () => {
               projectData={projectList.projectData}
               handleProjectCardClick={handleCardClick}
               handleProjectDeleteClick={handleDeleteClick}
-              handleProjectMoredetails={handleProjectMoredetails}
             />
           )}
-
-          <MoreDetails
-            projectMoreData={projectMoreData}
-            setProjectMoreOpen={setProjectMoreOpen}
-            projectMoreOpen={projectMoreOpen}
-          />
 
           <DeleteProject
             deleteopen={deleteopen}
