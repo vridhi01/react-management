@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ToastContainer } from "react-toastify";
+// import { ToastContainer } from "react-toastify";
 import AddProject from "./addProject";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -9,7 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DeleteProject from "./deleteModalProject";
 import { listEmployee } from "../../redux/slice/employee/listEmployeeSlice";
 import { projectalldata } from "../../types/projects/index";
-import ProjectList from "./projectList";
+import MyProjects from "./myProjects";
 
 const Index: React.FC = () => {
   const dispatch = useDispatch();
@@ -77,7 +77,7 @@ const Index: React.FC = () => {
   return (
     <>
       <div className="flex justify-end p-5">
-        <ToastContainer
+        {/* <ToastContainer
           position="bottom-left"
           autoClose={5000}
           hideProgressBar={false}
@@ -87,7 +87,7 @@ const Index: React.FC = () => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-        />
+        /> */}
         <AddProject
           edit={edit}
           editData={editData}
@@ -101,7 +101,7 @@ const Index: React.FC = () => {
       ) : (
         <>
           {projectList && projectList.projectData && (
-            <ProjectList
+            <MyProjects
               projectData={projectList.projectData}
               handleProjectCardClick={handleCardClick}
               handleProjectDeleteClick={handleDeleteClick}

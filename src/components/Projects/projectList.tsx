@@ -10,6 +10,11 @@ const ProjectList = (props: listprojectData) => {
     props;
 
   const navigate = useNavigate();
+  const handleNavigate = (projectObject: any) => {
+    navigate("/project_details", {
+      state: projectObject
+    });
+  };
 
   return (
     <>
@@ -42,37 +47,48 @@ const ProjectList = (props: listprojectData) => {
                         projectid,
                         clientName
                       } = projectObject;
+
                       return (
                         <tr
                           key={projectid}
                           className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            navigate("/project_details", {
-                              state: projectObject
-                            });
-                          }}
                         >
-                          <td className="py-3 px-6 text-left whitespace-nowrap">
+                          <td
+                            className="py-3 px-6 text-left whitespace-nowrap"
+                            onClick={() => handleNavigate(projectObject)}
+                          >
                             <div className="flex items-center">
                               <span className="font-medium">{team}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-6 text-left">
+                          <td
+                            className="py-3 px-6 text-left"
+                            onClick={() => handleNavigate(projectObject)}
+                          >
                             <div className="flex items-center text-gray-500">
                               <span>{projectName}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-6 text-left">
+                          <td
+                            className="py-3 px-6 text-left"
+                            onClick={() => handleNavigate(projectObject)}
+                          >
                             <div className="flex items-center text-gray-500">
                               <span>{rate}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-6 text-left">
+                          <td
+                            className="py-3 px-6 text-left"
+                            onClick={() => handleNavigate(projectObject)}
+                          >
                             <div className="flex items-center text-gray-500">
                               <span>{createdDate}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-6 text-left">
+                          <td
+                            className="py-3 px-6 text-left"
+                            onClick={() => handleNavigate(projectObject)}
+                          >
                             <div className="flex items-center flex-col text-gray-500">
                               {projectObject?.userData.map((text: any) => {
                                 return (
@@ -84,12 +100,18 @@ const ProjectList = (props: listprojectData) => {
                             </div>
                           </td>
 
-                          <td className="py-3 px-6 text-left">
+                          <td
+                            className="py-3 px-6 text-left"
+                            onClick={() => handleNavigate(projectObject)}
+                          >
                             <div className="flex items-center text-gray-500">
                               <span>{clientName}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-6 text-center">
+                          <td
+                            className="py-3 px-6 text-center"
+                            onClick={() => handleNavigate(projectObject)}
+                          >
                             {projectType == "fixed Price" ? (
                               <button className="bg-purple-200 text-purple-600 py-1 px-3 hover:bg-purple-300 rounded-full text-xs">
                                 {projectType}
@@ -100,6 +122,7 @@ const ProjectList = (props: listprojectData) => {
                               </button>
                             )}
                           </td>
+
                           <td className="py-3 px-6 text-center">
                             <div className="flex item-center justify-center">
                               <div

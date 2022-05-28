@@ -7,30 +7,34 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Formik } from "formik";
 import { useDispatch } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
 import * as yup from "yup";
 import { addEmployee } from "../../redux/slice/employee/addEmployeeSlice";
 import { editEmployee } from "../../redux/slice/employee/editEmployeeSLice";
 import { employeealldata, Props } from "../../types/employee/index";
 import Select from "@mui/material/Select";
+import { useSelector } from "react-redux";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 import MenuItem from "@mui/material/MenuItem";
 import { userRole } from "../../pages/hardCodedData";
 
 const validationSchema = yup.object({
-  userName: yup
-    .string()
-
-    .required("name is required"),
   userEmail: yup
     .string()
     .email("Enter a valid email")
-    .required("email is required"),
-  userRole: yup.string().required("role is required")
+    .required("email is required")
 });
 
 const AddEmployee = ({ edit, editData, open, setOpen }: Props) => {
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const [employeeDetails, setEmployeeDetails] = useState({
+    userName: "",
+    userEmail: "",
+    userRole: ""
+  });
 
   const [iseditItem, setIsEditItem] = useState<null | employeealldata>();
 
@@ -46,11 +50,41 @@ const AddEmployee = ({ edit, editData, open, setOpen }: Props) => {
   };
 
   const dispatch = useDispatch();
+  const RegisterEmployee = useSelector(
+    (state: RootState) => state.addEmployeeSlice
+  );
+
+  useEffect(() => {
+    console.log(RegisterEmployee, "===========");
+    const genRandomKey = async () => {
+      if (RegisterEmployee.employeeRData.uid) {
+        console.log(RegisterEmployee.employeeRData.uid, "ppppppppp");
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify(RegisterEmployee.employeeRData.uid)
+        );
+        const data = {
+          userName: employeeDetails.userName,
+          userEmail: employeeDetails.userEmail,
+          userRole: employeeDetails.userRole,
+          userId: RegisterEmployee.employeeRData.uid
+        };
+
+        const usersRef = collection(db, "users");
+        await setDoc(
+          doc(usersRef, `${RegisterEmployee.employeeRData.uid}`),
+          data
+        );
+      }
+    };
+    genRandomKey();
+  }, [RegisterEmployee.employeeRData]);
 
   const initialValues = {
     userName: edit ? iseditItem?.userName : "",
     userRole: edit ? iseditItem?.userRole : "User",
     userEmail: edit ? iseditItem?.userEmail : "",
+    userPassword: edit ? iseditItem?.userPassword : "",
     userId: edit ? iseditItem?.userId : ""
   };
 
@@ -89,18 +123,19 @@ const AddEmployee = ({ edit, editData, open, setOpen }: Props) => {
           validationSchema={validationSchema}
           enableReinitialize={true}
           onSubmit={(values, actions) => {
+            setEmployeeDetails(values);
             dispatch(
               edit
                 ? editEmployee({
                     userName: values.userName,
                     userRole: values.userRole,
                     userEmail: values.userEmail,
+                    userPassword: values.userPassword,
                     userId: values.userId
                   })
                 : addEmployee({
-                    userName: values.userName,
-                    userRole: values.userRole,
-                    userEmail: values.userEmail
+                    userEmail: values.userEmail,
+                    userPassword: values.userPassword
                   })
             );
           }}
@@ -163,6 +198,27 @@ const AddEmployee = ({ edit, editData, open, setOpen }: Props) => {
                         />
                         <p className="text-red-600 text-xs">
                           {touched.userEmail && errors.userEmail}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block">User Password</label>
+                        <TextField
+                          type="text"
+                          placeholder="User Password"
+                          name="userPassword"
+                          autoComplete="off"
+                          className="mt-2 w-full border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                          onChange={(e) => {
+                            handleChange(e);
+                            setTouched({ ...touched, ["userPassword"]: true });
+                          }}
+                          value={values.userPassword}
+                          error={
+                            touched.userPassword && Boolean(errors.userPassword)
+                          }
+                        />
+                        <p className="text-red-600 text-xs">
+                          {touched.userPassword && errors.userPassword}
                         </p>
                       </div>
 

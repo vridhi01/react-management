@@ -28,7 +28,7 @@ export const addProjectApi = async (
     await Promise.all(
       userData?.map(async (dataset: any) => {
         const q = query(
-          collection(db, "employee"),
+          collection(db, "users"),
           where("userId", "==", dataset)
         );
         const querySnapshot = await getDocs(q);
@@ -176,7 +176,7 @@ export const editProjectApi = async (
     await Promise.all(
       userData?.map(async (dataset: any) => {
         const q = query(
-          collection(db, "employee"),
+          collection(db, "users"),
           where("userId", "==", dataset)
         );
         const querySnapshot = await getDocs(q);

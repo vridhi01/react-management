@@ -54,6 +54,9 @@ export interface RootState {
   };
   addEmployeeSlice: {
     employeeaddingSuccess: boolean;
+    employeeRData: {
+      uid: string;
+    };
   };
   listEmployeeSlice: {
     employeeData: [];

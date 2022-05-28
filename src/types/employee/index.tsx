@@ -1,9 +1,15 @@
 import React from "react";
 
+export interface employecred {
+  userEmail: string;
+  userPassword: string;
+}
+
 export interface employeealldata {
   userName: string | any;
   userRole: string | any;
   userEmail: string | any;
+  userPassword: string | any;
   userId?: string | any;
 }
 

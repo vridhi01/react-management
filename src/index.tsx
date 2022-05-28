@@ -7,7 +7,7 @@ import store from "./redux/store";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "../src/theme/index";
+import theme from "./theme/index";
 import { AuthContextProvider } from "./context/AppContextData";
 import "./index.css";
 

@@ -40,14 +40,12 @@ const listProjectSlice = createSlice({
       state.projectlistingFailed = true;
       state.projectlistingSuccess = false;
       state.errorMsg = action.payload;
-      state.projectData = [];
     });
     builder.addCase(listProject.pending, (state, { payload }) => {
       state.isprojectlistloading = true;
       state.projectlistingFailed = false;
       state.projectlistingSuccess = false;
       state.errorMsg = "";
-      state.projectData = [];
     });
   }
 });

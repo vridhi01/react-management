@@ -15,6 +15,7 @@ const Index: React.FC = () => {
   const employeeList = useSelector(
     (state: RootState) => state.listEmployeeSlice
   );
+
   const deleteUserList = useSelector(
     (state: RootState) => state.deleteEmployeeSlice
   );
@@ -28,6 +29,7 @@ const Index: React.FC = () => {
 
   useEffect(() => {
     if (addEmployeesuccess.employeeaddingSuccess) {
+      console.log("kkkk");
       dispatch(listEmployee());
       setOpen(false);
     }

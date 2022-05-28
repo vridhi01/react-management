@@ -3,14 +3,11 @@ import { toast } from "react-toastify";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
-  createUserWithEmailAndPassword,
-  inMemoryPersistence,
-  setPersistence
+  createUserWithEmailAndPassword
 } from "firebase/auth";
 
 export const loginApi = async (email: string, password: string) => {
   try {
-    setPersistence(auth, inMemoryPersistence);
     const userLogin = await signInWithEmailAndPassword(auth, email, password);
     localStorage.setItem("currentUser", userLogin?.user?.uid);
     return userLogin;
