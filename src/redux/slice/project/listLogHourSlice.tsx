@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { listProjectApi } from "../../../api/projectapi";
+import { listProjectLog } from "../../../api/projectapi";
 
-export const listProject = createAsyncThunk(
-  "/listProject",
+export const listProjectAllLog = createAsyncThunk(
+  "/listProjectLog",
   async (_, thunkAPI) => {
     try {
-      const listprojectdata = await listProjectApi();
+      const listprojectdata = await listProjectLog();
       return listprojectdata;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -17,31 +17,31 @@ const initialState: any = {
   isprojectlistloading: false,
   projectlistingFailed: true,
   projectlistingSuccess: false,
-  projectData: [],
+  projectCodeData: [],
   errorMsg: ""
 };
 
-export const listProjectSlice = createSlice({
-  name: "listProjectSlice",
+const listProjectLogSlice = createSlice({
+  name: "listProjectLogSlice",
   initialState,
   reducers: {
-    resetListProject: () => initialState
+    resetListLogProject: () => initialState
   },
   extraReducers: (builder) => {
-    builder.addCase(listProject.fulfilled, (state, action) => {
+    builder.addCase(listProjectAllLog.fulfilled, (state, action) => {
       state.isprojectlistloading = false;
       state.projectlistingFailed = false;
       state.projectlistingSuccess = true;
-      state.projectData = action.payload;
+      state.projectCodeData = action.payload;
       state.errorMsg = "";
     });
-    builder.addCase(listProject.rejected, (state, action: any) => {
+    builder.addCase(listProjectAllLog.rejected, (state, action: any) => {
       state.isprojectlistloading = false;
       state.projectlistingFailed = true;
       state.projectlistingSuccess = false;
       state.errorMsg = action.payload;
     });
-    builder.addCase(listProject.pending, (state, { payload }) => {
+    builder.addCase(listProjectAllLog.pending, (state, { payload }) => {
       state.isprojectlistloading = true;
       state.projectlistingFailed = false;
       state.projectlistingSuccess = false;
@@ -50,6 +50,6 @@ export const listProjectSlice = createSlice({
   }
 });
 
-export const { resetListProject } = listProjectSlice.actions;
+export const { resetListLogProject } = listProjectLogSlice.actions;
 
-export default listProjectSlice.reducer;
+export default listProjectLogSlice.reducer;
