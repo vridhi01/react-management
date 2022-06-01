@@ -14,6 +14,7 @@ import MyProjects from "./myProjects";
 const Index: React.FC = () => {
   const dispatch = useDispatch();
   const projectList = useSelector((state: RootState) => state.listProjectSlice);
+
   const deleteProductList = useSelector(
     (state: RootState) => state.deleteProjectSlice
   );
@@ -24,6 +25,10 @@ const Index: React.FC = () => {
   const addProjectsuccess = useSelector(
     (state: RootState) => state.addProjectSlice
   );
+
+  // const projectLogLists = useSelector(
+  //   (state: RootState) => state.listProjectLogSlice
+  // );
 
   useEffect(() => {
     dispatch(listProject());
@@ -36,6 +41,12 @@ const Index: React.FC = () => {
       setOpen(false);
     }
   }, [addProjectsuccess.projectaddingSuccess]);
+
+  // useEffect(() => {
+  //   if (projectLogLists.projectLoglistingSuccess) {
+  //     dispatch(listProject());
+  //   }
+  // }, [projectLogLists.projectLoglistingSuccess]);
 
   useEffect(() => {
     if (deleteProductList.projectdeleteSuccess) {

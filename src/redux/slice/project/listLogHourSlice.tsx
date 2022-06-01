@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { listProjectLog } from "../../../api/projectapi";
+import { listProjectLog } from "../../../api/fixedhoursapi";
 
 export const listProjectAllLog = createAsyncThunk(
   "/listProjectLog",
-  async (_, thunkAPI) => {
+  async (projectid: any, thunkAPI) => {
+    console.log(projectid, "lll");
     try {
-      const listprojectdata = await listProjectLog();
+      const listprojectdata = await listProjectLog(projectid);
       return listprojectdata;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -14,10 +15,10 @@ export const listProjectAllLog = createAsyncThunk(
 );
 
 const initialState: any = {
-  isprojectlistloading: false,
-  projectlistingFailed: true,
-  projectlistingSuccess: false,
-  projectCodeData: [],
+  isprojectLoglistloading: false,
+  projectLoglistingFailed: true,
+  projectLoglistingSuccess: false,
+  projectLogData: [],
   errorMsg: ""
 };
 
@@ -29,22 +30,22 @@ const listProjectLogSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(listProjectAllLog.fulfilled, (state, action) => {
-      state.isprojectlistloading = false;
-      state.projectlistingFailed = false;
-      state.projectlistingSuccess = true;
-      state.projectCodeData = action.payload;
+      state.isprojectLoglistloading = false;
+      state.projectLoglistingFailed = false;
+      state.projectLoglistingSuccess = true;
+      state.projectLogData = action.payload;
       state.errorMsg = "";
     });
     builder.addCase(listProjectAllLog.rejected, (state, action: any) => {
-      state.isprojectlistloading = false;
-      state.projectlistingFailed = true;
-      state.projectlistingSuccess = false;
+      state.isprojectLoglistloading = false;
+      state.projectLoglistingFailed = true;
+      state.projectLoglistingSuccess = false;
       state.errorMsg = action.payload;
     });
     builder.addCase(listProjectAllLog.pending, (state, { payload }) => {
-      state.isprojectlistloading = true;
-      state.projectlistingFailed = false;
-      state.projectlistingSuccess = false;
+      state.isprojectLoglistloading = true;
+      state.projectLoglistingFailed = false;
+      state.projectLoglistingSuccess = false;
       state.errorMsg = "";
     });
   }

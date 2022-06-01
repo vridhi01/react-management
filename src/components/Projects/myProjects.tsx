@@ -71,7 +71,7 @@ const MyProjects = (props: listprojectData) => {
 
   return (
     <Box className="grid grid-cols-4">
-      <Box className="overflow-X-scroll max-h-full flex flex-col">
+      <Box className="overflow-y-scroll  max-h-full flex flex-col">
         <Tabs
           value={value}
           onChange={handleChange}

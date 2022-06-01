@@ -6,7 +6,9 @@ export const fixedhoursapi = async (
   pendingReason: string,
   projectTasks: string,
   tasksStatus: string,
-  timepicker: string
+  projectid: string,
+  timepicker: string,
+  currentData: string
 ) => {
   try {
     const newDocRef = doc(collection(db, "fixedhours"));
@@ -14,7 +16,9 @@ export const fixedhoursapi = async (
       timepicker: timepicker,
       projectTasks: projectTasks,
       tasksStatus: tasksStatus,
-      pendingReason: pendingReason
+      projectid: projectid,
+      pendingReason: pendingReason,
+      currentData: currentData
     });
     toast("tasks added successfully", {
       position: "bottom-left",
@@ -30,30 +34,14 @@ export const fixedhoursapi = async (
   }
 };
 
-export const listProjectLog = async () => {
+export const listProjectLog = async (projectid: string) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "projects"));
-    const collectiondata: any = [];
-    await Promise.all(
-      querySnapshot.docs.map(async (doc) => {
-        const projectData = doc.data();
-        const querySnapshot2 = await getDocs(
-          collection(db, "projects", projectData.projectid, "users")
-        );
-        const arr: Array<object> = [];
-        await Promise.all(
-          querySnapshot2.docs.map((doc) => {
-            const userquerydata = doc.data();
-            arr.push(userquerydata);
-          })
-        );
-        if (arr.length > 0) {
-          collectiondata.push({ ...projectData, userData: arr });
-        }
-      })
+    const querySnapshotProjectLog = await getDocs(collection(db, "fixedhours"));
+    const data2ProjectLog = querySnapshotProjectLog.docs.map((doc) =>
+      doc.data()
     );
-    console.log(collectiondata, "collectiondata");
-    return collectiondata;
+
+    return data2ProjectLog;
   } catch (error: any) {
     throw error;
   }

@@ -19,14 +19,16 @@ import { fixedProject } from "../../redux/slice/project/fixedHoursSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
 import { ToastContainer } from "react-toastify";
+import moment from "moment";
 
 const validationSchema = yup.object({
   projectTasks: yup.string().required("Project Tasks is required"),
   tasksStatus: yup.string().required("Tasks Status is required"),
-  timepicker: yup.string().required("Project Hours is required")
+  startTime: yup.string().required("Start Time  is required"),
+  endTime: yup.string().required("End Time is required")
 });
 
-const FixedHours = ({ fixedHours, setFixedHours }: any) => {
+const FixedHours = ({ fixedHours, setFixedHours, projectDatas }: any) => {
   const dispatch = useDispatch();
 
   const addFixedHourssuccess = useSelector(
@@ -46,7 +48,9 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
     projectTasks: "",
     tasksStatus: "",
     pendingReason: "",
-    timepicker: null
+    startTime: moment("5:16:59 am", "HH:mm:ss a"),
+    endTime: moment("5:12:07 pm", "HH:mm:ss a"),
+    timepicker: ""
   };
 
   return (
@@ -73,12 +77,21 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
           validationSchema={validationSchema}
           enableReinitialize={true}
           onSubmit={(values, actions) => {
+            const duration: any = moment.duration(
+              moment(values?.endTime).diff(moment(values?.startTime))
+            );
+
+            const hours = parseInt(duration.asHours());
+            const minutes = parseInt(duration.asMinutes()) - hours * 60;
+
             dispatch(
               fixedProject({
                 pendingReason: values.pendingReason,
                 projectTasks: values.projectTasks,
                 tasksStatus: values.tasksStatus,
-                timepicker: values.timepicker
+                projectid: projectDatas.projectid,
+                timepicker: hours + " hour and " + minutes + " minutes.",
+                currentData: moment(new Date()).format("MMMM do YYYY , h:mm a")
               })
             );
           }}
@@ -101,30 +114,46 @@ const FixedHours = ({ fixedHours, setFixedHours }: any) => {
                 }}
               >
                 <DialogContent>
-                  <label className="block">Project Hours</label>
+                  <label className="block">Start Time</label>
                   <LocalizationProvider
                     dateAdapter={AdapterDateFns}
                     style={{ borderColor: "#e5e7eb !important" }}
                   >
                     <Stack spacing={3}>
                       <TimePicker
-                        ampm={false}
-                        ampmInClock={false}
-                        value={values.timepicker}
+                        value={values.startTime}
                         onChange={(value) => {
-                          setFieldValue("timepicker", value);
+                          setFieldValue("startTime", value);
                         }}
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </Stack>
                   </LocalizationProvider>
-                  {values?.timepicker == "Invalid Date" ? (
-                    <p className="text-red-600 text-xs">Invalid Date</p>
-                  ) : (
+                  <p className="text-red-600 text-xs">
+                    {touched.startTime && errors.startTime}
+                  </p>
+
+                  <div className="mt-4">
+                    {" "}
+                    <label className="block">End Time</label>
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      style={{ borderColor: "#e5e7eb !important" }}
+                    >
+                      <Stack spacing={3}>
+                        <TimePicker
+                          value={values.endTime}
+                          onChange={(value) => {
+                            setFieldValue("endTime", value);
+                          }}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </Stack>
+                    </LocalizationProvider>
                     <p className="text-red-600 text-xs">
-                      {touched.timepicker && errors.timepicker}
+                      {touched.endTime && errors.endTime}
                     </p>
-                  )}
+                  </div>
 
                   <div className="mt-4">
                     <label className="block">Tasks</label>

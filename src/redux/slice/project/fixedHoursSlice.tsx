@@ -5,7 +5,14 @@ import { fixedhoursapi } from "../../../api/fixedhoursapi";
 export const fixedProject = createAsyncThunk(
   "/fixedProject",
   async (
-    { pendingReason, projectTasks, tasksStatus, timepicker }: fixedhoursdata,
+    {
+      pendingReason,
+      projectTasks,
+      tasksStatus,
+      projectid,
+      timepicker,
+      currentData
+    }: fixedhoursdata,
     thunkAPI
   ) => {
     try {
@@ -13,7 +20,9 @@ export const fixedProject = createAsyncThunk(
         pendingReason,
         projectTasks,
         tasksStatus,
-        timepicker
+        projectid,
+        timepicker,
+        currentData
       );
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
