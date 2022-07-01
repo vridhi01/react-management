@@ -26,7 +26,7 @@ import { teamDetails, prodjectType } from "../../pages/hardCodedData";
 
 const validationSchema = yup.object({
   projectName: yup.string().required("name is required"),
-  clientName: yup.string().required("CLient name is required"),
+  clientName: yup.string().required("Client name is required"),
   Description: yup.string().required("Description is required"),
   Link: yup.string().url("Must be a valid URL").required("Link is required"),
   Rate: yup.string().required("Rate is required"),

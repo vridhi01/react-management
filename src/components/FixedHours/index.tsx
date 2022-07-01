@@ -91,7 +91,7 @@ const FixedHours = ({ fixedHours, setFixedHours, projectDatas }: any) => {
                 tasksStatus: values.tasksStatus,
                 projectid: projectDatas.projectid,
                 timepicker: hours + " hour and " + minutes + " minutes.",
-                currentData: moment(new Date()).format("MMMM do YYYY , h:mm a")
+                currentData: new Date()
               })
             );
           }}
@@ -122,10 +122,10 @@ const FixedHours = ({ fixedHours, setFixedHours, projectDatas }: any) => {
                     <Stack spacing={3}>
                       <TimePicker
                         value={values.startTime}
-                        onChange={(value) => {
+                        onChange={(value: any) => {
                           setFieldValue("startTime", value);
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params: any) => <TextField {...params} />}
                       />
                     </Stack>
                   </LocalizationProvider>
